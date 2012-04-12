@@ -1,0 +1,20 @@
+
+XBMCwui (XBMC Web User Interface)
+
+An advanced web UI for XBMC. Very much focused on music with video on its way
+It is in early beta but still very stable. 
+
+--------------------------------------------------------------------------------
+
+Features:
+- Beautiful UI which is simple yet powerful. Google Music being the inspiration. 
+- Fast! Loads your music library once then zips around from there
+- Ability to make multiple browser playlists
+- Play browser playlists... In XBMC or your browser!
+- Drag and drop interface for adding songs to playlists
+- Powerful and fast search
+
+
+Known Issues:
+- The bigger your music collection, the longer it takes to load (about 5 sec per 10000 songs)
+- Checkout the issues page on github
