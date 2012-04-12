@@ -1004,7 +1004,7 @@ body.paused #pl-0 i.icon-pause {
 .song-list .levels span {
 	background: url(ledlevel-1.gif) 0 0 no-repeat;	
 }
-.browser-player .song-list .selected span,
+
 .song-list .selected .levels span {
 	display: none;
 }
