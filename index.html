@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>XBMCwui | Web Remote</title>
+	
+	<link rel="shortcut icon" href="favicon.png">
+	
+	<link rel="stylesheet" href="lib/fontawesome/css/font-awesome.css" />
+	<link rel="stylesheet" href="lib/jquery-ui/css/smoothness/jquery-ui-1.8.18.custom.css" />
+	<link rel="stylesheet" href="theme/base.css" />
+	<link rel="stylesheet" href="theme/xbmcwui.css" />
+	
+	<!-- jQuery and common jquery libs -->	
+	<script src="lib/common.js"></script>
+	<script src="lib/jquery-ui/js/jquery-ui-1.8.18.custom.min.js"></script>
+	<script src="lib/soundmanager/script/soundmanager2-nodebug-jsmin.js"></script>
+	<!-- <script src="lib/swfobject.js"></script> -->	
+	
+	<!-- API -->	
+	<script src="app/api/xbmcapi.js"></script>
+			
+	<!-- controllers -->	
+	<script src="app/controller/index.js"></script>
+	<script src="app/controller/router.js"></script>
+	<script src="app/controller/nowplaying.js"></script>
+	<script src="app/controller/search.js"></script>
+	<script src="app/controller/browserplayer.js"></script>
+		
+	<!-- templates -->	
+	<script src="app/view/templates.js"></script>
+	
+	<!-- models -->	
+	<script src="app/models/music.js"></script>
+	<script src="app/models/files.js"></script>
+	<script src="app/models/system.js"></script>
+	<script src="app/models/playlists.js"></script>
+	
+</head> 
+<body class="xbmc-player"> 
+
+	<div id="page-wrapper"><div id="page">
+	
+		<header>
+			<div id="header-inner">
+				<div id="logo">
+					<h1><i class="icon-headphones"></i> <strong>xbmc</strong>wui</h1>
+				</div>
+				<div id="search-box">
+					<input type="text" class="form-search form-text" id="searchinput" placeholder="search" />
+					<i class="icon-remove-sign" id="clearsearch"></i>
+					<a href="#search" id="search-button"><i class="icon-search"></i></a>
+				</div>
+				<div id="loading-msg-wrapper">
+					<div id="loading-msg"></div>
+				</div>
+
+			</div>
+			<div id="notify-wrapper">
+				<div id="notify">
+					Loading App
+				</div>				
+			</div>
+		</header>
+	
+	
+	
+	
+		<div id="sidebar">
+			<div id="sidebar-inner">
+				<ul class="nav">					
+					<li class="music-parent"><a class="toggler"><i class="icon-headphones"></i> Music</a>
+						<ul>							
+							<li><a class="op op-genres"><i class="icon-th-large"></i> Genres</a></li>
+							<li><a class="op op-artists"><i class="icon-user"></i> Artists</a></li>
+							<li><a class="op op-albums"><i class="icon-book"></i> Albums</a></li>
+							<li><a class="op op-songs"><i class="icon-play-circle"></i> Songs</a></li>
+							<li><a class="op op-files" data-task="music"><i class="icon-list"></i> Files</a></li>
+						</ul>
+					</li>
+					<li class="myplaylists-wrapper"><i class="icon-plus-sign pl-new-toggle"></i><a class="toggler"><i class="icon-th-list"></i> Playlists</a>
+						<ul id="myplaylists">
+							<li class="new-playlist"><input type="text" placeholder="Playlist Name" id="newplaylist" /><i class="icon-plus-sign"></i></li>
+						</ul>					
+					</li>	
+					<li class="system-parent"><a class="toggler"><i class="icon-cogs"></i> System</a>
+						<ul>
+							<li><a class="op op-stats"><i class="icon-info-sign"></i> Stats</a></li>
+						</ul>
+					</li>									
+					<!--  todo...
+					<li><a href="video.html" class="toggler"><i class="icon-facetime-video"></i> Video Library</a></li>
+					-->
+				</ul>
+
+								
+			</div>
+		</div>
+	
+	
+	
+	   <div id="content">
+	   	<div id="content-target">
+	   		<div id="loading-splash">
+			
+				
+				<div id="screen-log">
+					<div>Loading your smart web remote...</div>
+					<div>Not Loading? <a href="/">click to reload</a></div>
+				</div>								
+			</div>
+			
+	
+	    </div>
+	   </div>
+	
+	
+	
+		<footer><div id="player">
+		  
+		  <div class="player-right">
+		  	<div id="time">
+		  		<span class="time-current">0:00</span> / <span class="time-duration">0:00</span>
+		  	</div>
+		  	<ul id="player-actions">
+				<li class="action action-repeat noSelect"><i class="icon-repeat"></i></li>
+				<li class="action action-random noSelect"><i class="icon-random"></i></li>
+				<li class="action action-volume noSelect">
+					<i class="icon-volume-down"></i>
+					<div id="volume-control">
+						<div id="volume-wrapper">
+							<div id="volume"></div>
+						</div>
+						<i class="icon-volume-down"></i>
+					</div>
+				</li>	
+				<li class="action action-toggle-player" title="Switch to browser player controls">xbmc</li>	  		
+		  	</ul>
+		  </div>
+		  
+		  <div class="player-left">
+			<ul id="player-controls">
+				<li class="action action-prev"><i class="icon-fast-backward"></i></li>
+				<li class="action action-play"><i class="icon-play icon-large"></i><i class="icon-pause icon-large"></i></li>
+				<li class="action action-next"><i class="icon-fast-forward"></i></li>
+			</ul>
+			<div id="now-playing" data-albumid="">
+				<div class="wui-menu" title="click for more options"><div class="wui-menu-items"></div></div>
+				<div id="playing-button" title="more from this artist">
+					<img src="/theme/default.png" class="playing-thumb" />
+					<h4 class="playing-title"></h4>
+					<p class="playing-sub-title"></p>
+				</div>
+			</div>
+		  </div>
+		  	
+		  <div class="player-mid">
+		  	<div id="progress-wrapper"><div id="progress"></div></div>
+
+		  </div>	
+		  	
+		</div>
+		
+		
+		
+		
+		<div id="browser-player">	
+			  
+		  <div class="player-right">
+		  	<div id="browser-time">
+		  		<span class="time-current">0:00</span> / <span class="time-duration">0:00</span>
+		  	</div>
+		  	<ul id="browser-player-actions">
+				<li class="action action-browser-repeat noSelect"><i class="icon-repeat"></i></li>
+				<li class="action action-browser-random noSelect"><i class="icon-random"></i></li>
+				<li class="action action-browser-volume noSelect">
+					<i class="icon-volume-down"></i>
+					<div id="browser-volume-control">
+						<div id="browser-volume-wrapper">
+							<div id="browser-volume"></div>
+						</div>
+						<i class="icon-volume-down"></i>
+					</div>
+				</li>	
+				<li class="action action-toggle-player" title="Switch to XBMC player controls">browser</li>	  		
+		  	</ul>
+		  </div>
+		  
+		  <div class="player-left">
+			<ul id="browser-player-controls">
+				<li class="action action-browser-prev"><i class="icon-fast-backward"></i></li>
+				<li class="action action-browser-play"><i class="icon-play icon-large"></i><i class="icon-pause icon-large"></i></li>
+				<li class="action action-browser-next"><i class="icon-fast-forward"></i></li>
+			</ul>
+			<div id="browser-now-playing" data-albumid="">
+				<div class="wui-menu" title="click for more options"><div class="wui-menu-items"></div></div>
+				<div id="browser-playing-button" title="more from this artist">
+					<img src="/theme/default.png" class="browser-playing-thumb" />
+					<h4 class="browser-playing-title"></h4>
+					<p class="browser-playing-sub-title"></p>
+				</div>
+			</div>
+		  </div>
+		  	
+		  <div class="player-mid">
+		  	<div id="browser-progress-wrapper"><div id="browser-progress"></div> </div>		 
+		  </div>	
+		  		  		  	
+		</div>
+				
+		</footer>
+	
+	
+	</div></div>
+
+
+<div id="offpage" style="display: none">
+<div id="dialog"></div>
+</div>
+
+
+</body>
+</html>

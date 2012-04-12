@@ -1,0 +1,56 @@
+
+The following projects helped bring this to life
+
+--------------------------------------------------------------------------------
+
+XBMC... for just being awesome, I have been following it from when its early days 
+on the xbox and have watched it get more and more brilliant with each release.
+A big thank you to all involved. A special thanks to those who have worked
+towards the JSON RCP API.  This is actually my 4th attempt at this project, my
+first 2 were with the old HTTP API and the new interface is heaven in comparison.
+
+--------------------------------------------------------------------------------
+
+This Project uses the JavaScript Library jQuery and jQuery UI. These projects are
+licensed under MIT and GPL licenses.
+Have a look at
+	http://jquery.com
+	http://jqueryui.com
+
+--------------------------------------------------------------------------------
+
+This Project uses FONT AWESOME! for its icons
+Check it out.. http://fortawesome.github.com/Font-Awesome/
+
+--------------------------------------------------------------------------------
+
+The following jQuery plugins are in use, thanks to all the authors
+ - http://demos.flesler.com/jquery/scrollTo/
+ - http://www.jstorage.info/
+ - http://benalman.com/projects/jquery-bbq-plugin/
+ - http://github.com/jquery/jquery-tmpl
+
+--------------------------------------------------------------------------------
+
+For playing music in the browser, we use SoundManager2
+http://www.schillmania.com/projects/soundmanager2/
+
+--------------------------------------------------------------------------------
+
+The AWX project was very handy for finding out how to do things, I also borrowed 
+one function. http://forum.xbmc.org/showthread.php?tid=81775
+
+--------------------------------------------------------------------------------
+
+And Google. 
+Users of Google Music ("Play" as it is now called)  will find the 
+UI to be very similar to how Google have done things. This is because they 
+are the experts and building powerful web apps with easy and intuitive UIs.
+So while not exactly using any code, ideas have been used. Thanks Google,
+hope you dont mind
+
+--------------------------------------------------------------------------------
+
+All the rest is me, Jeremy Graham.
+I hope you enjoy using this as much as I do :)
+

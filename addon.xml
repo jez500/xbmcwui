@@ -1,0 +1,17 @@
+﻿<?xml version="0.1" encoding="UTF-8"?>
+<addon
+  id="webinterface.xbmcwui"
+  version="1.3"
+  name="xbmcwui"
+  provider-name="Jeremy Graham">
+  <requires>
+    <import addon="xbmc.gui" version="2.11"/>
+  </requires>
+  <extension
+    point="xbmc.gui.webinterface"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">xbmcwui - Web interface based on jQuery</summary>
+    <description lang="en">An andvanced and clean web ui that also supports playing music in the browser</description>
+    <platform>all</platform>
+  </extension>
+</addon>
