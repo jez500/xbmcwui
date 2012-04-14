@@ -140,9 +140,29 @@ var playlists = {
 		  });
 		  
 
-		
-		
-		
+		  
+		  //to keep all the drag binds up to date we need to do some workarounds
+		  //when drag a dragable rebind drop targets that have not been defined
+		  $('.ui-draggable').live('mousemove', function(){  
+			  
+			//add droppable
+			$('#myplaylists li a:not(.ui-droppable)').droppable({
+				activeClass: "dropper-inbound",
+				hoverClass: "dropper-over",
+				accept: ".protector, .covers, .cover",
+				drop: function( event, ui ) {
+					console.log(event, ui);
+					var plid = $(this).attr('data-id');
+					$(ui.draggable).each(function(i,o){
+						var ob = $(o);
+						playlists.addItemToPlaylist(plid, ob.attr('data-type'), ob.attr('data-id'));
+					});
+					$(this).effect('highlight');
+					playlists.getPlaylists();	
+				}
+			});	
+			
+		  });
 		
 		
 		//get storage
@@ -184,22 +204,7 @@ var playlists = {
 		
 		
 		
-		//add droppable
-		$('#myplaylists li a').droppable({
-			activeClass: "dropper-inbound",
-			hoverClass: "dropper-over",
-			drop: function( event, ui ) {
-				console.log(event, ui);
-				var plid = $(this).attr('data-id');
-				$(ui.draggable).each(function(i,o){
-					var ob = $(o);
-					playlists.addItemToPlaylist(plid, ob.attr('data-type'), ob.attr('data-id'));
-				});
-				$(this).effect('highlight');
-				playlists.getPlaylists();	
-			}
-		});	
-		
+
 		
 
 		
