@@ -15,6 +15,20 @@ Features:
 - Powerful and fast search
 
 
+
+Install:
+- install XBMC v11 eden, add a music share and scan for new music
+- find your local XBMC/addons folder (eg. win: C:\Users\username\AppData\Roaming\XBMC\addons, linux: ~/.xbmc/addons)
+- create a folder called "webinterface.xbmcwui" and cd into it
+- clone this project into that folder
+- if xbmc is running, restart it
+- in xbmc, go to settings > network and allow web access then change the web interface to xbmcwui
+- visit the address of xbmc in your browser
+
+TODO: create a zip installer and eventually get it into the xbmc repo
+
+
+
 Known Issues:
 - The bigger your music collection, the longer it takes to load (about 5 sec per 10000 songs)
 - Checkout the issues page on github
