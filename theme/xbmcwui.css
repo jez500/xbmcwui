@@ -79,7 +79,7 @@ h1 i,
 #clearsearch,
 .album-item,
 #file-list li,
-li.song,
+.library-list li.song,
 .artist-item,
 #loading-msg-wrapper {
 	-webkit-transition: all 0.3s ease-in-out;
@@ -210,7 +210,7 @@ footer {
 .ui-dialog {
 	background: #323336;
 	background: rgba(50,51,54,0.9);
-	padding: 8px;
+	padding: 4px 8px;
 	color: #fff !important;
 	font-size: 15px;
 }
@@ -221,10 +221,11 @@ footer {
 	font-weight: normal;
 	background: none;
 	font-size: 14px;
-	padding-bottom: 7px;
+	padding: 10px 10px;
+	margin: 0 5px;
 }
 
-#dialog p, .ui-dialog h2, .ui-dialog h5, .ui-widget-header, #dialog {
+#dialog p, .ui-dialog h2, .ui-dialog h5, .ui-widget-header, #dialog, #dialog li, #dialog a {
 	color: #fff;
 	font-size: 14px;
 }
@@ -235,9 +236,64 @@ footer {
 	background-image: url(../lib/jquery-ui/css/smoothness/images/ui-icons_888888_256x240.png);
 }
 #dialog {
-	padding: 15px 15px;
-	
+	padding: 4px 5px 0;	
 }
+#dialog p,
+#dialog li a {
+	padding: 12px 10px;
+	margin: 0 0px;
+	border-bottom: 1px solid #5f5f5f;
+	display: block;
+	cursor: pointer;
+}
+#dialog li a {
+	height: 18px;
+}
+#dialog p {
+	padding-bottom: 17px;
+}
+#dialog li a:hover {
+	background: #6699FF;
+	color: #fff;
+	border-bottom-color: #5684e1;
+}
+.ui-dialog .ui-dialog-buttonpane {
+	padding: 0;
+	background: none;
+	border: 0;
+	overflow: hidden;
+	margin: 5px 0 2px;
+}
+.ui-dialog .ui-dialog-buttonpane button {
+	border: 0;
+	background: none;
+	margin: 0;
+	width: 175px;
+	padding: 9px 30px;	
+	border-radius: 0;
+	display: block;
+	float: left;
+	outline:none; 
+}
+.ui-dialog .ui-dialog-buttonpane button.ui-state-hover {
+	background: #6699FF;
+	border-color: #5684e1;
+}
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset  button:first-child {
+	border-right: 1px solid #5f5f5f;
+}
+.ui-button-text-only .ui-button-text {
+	padding: 0;
+	color: #fff;
+	font-size: 14px;
+}
+/* hide close icon - should use button */
+.ui-dialog .ui-dialog-titlebar-close {
+	display: none;
+}
+
+
+
 
 /* Header */
 #header-inner {
