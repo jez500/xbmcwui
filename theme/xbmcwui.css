@@ -220,11 +220,12 @@ footer {
 	border: 0;
 	border-radius: 0;
 	border-bottom: 2px solid #6699FF;
-	font-weight: normal;
+	font-weight: bold;
 	background: none;
 	font-size: 14px;
 	padding: 10px 10px;
 	margin: 0 5px;
+	color: #6699FF;
 }
 
 #dialog p, .ui-dialog h2, .ui-dialog h5, .ui-widget-header, #dialog, #dialog li, #dialog a {
