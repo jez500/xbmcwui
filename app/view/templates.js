@@ -124,16 +124,18 @@ var templates = {
 						'<div class="cover" data-type="albumid" data-id="' + album.albumid + '">' + 						
 							'<img src="' +  templates.imagePath(album.thumbnail) + '" class="thumb" />' + 
 						'</div>' + 
-						'<div class="wui-menu">' + 
+						'<div class="more-button" data-task="album" data-id="' + album.albumid + '">' + 
 							'<h4>' + album.label + '</h4>' + 
 							'<p>' + album.artist + '</p>' + 
 							'<p class="meta">' + (album.year > 0 ? album.year : '') + '</p>' + 	
+							/*
 							'<div class="wui-menu-items" data-artistid="' + album.artistid + '" data-albumid="' + album.albumid + '">' + 
 								'<div class="item" data-task="play-parent-album-add"><i class="icon-plus-sign"></i> Add Album</div>' + 
 								'<div class="item" data-task="play-parent-album"><i class="icon-play"></i> Play Album</div>' + 
 								'<div class="item" data-task="view-parent-album"><i class="icon-eye-open"></i> View Songs</div>' + 							
 								'<div class="item" data-task="search-query" data-query="' + album.artist + '"><i class="icon-search"></i> ' + album.artist + '</div>' + 
 							'</div>' + 
+							*/
 						'</div>' + 
 				'</div>';
 	},	
@@ -147,47 +149,59 @@ var templates = {
 	/* songs only list  */
 	songList: function(items, page){
 		
-		items = templates.pager(items, page, 500); //get a paged version of the results
-		
+		items = templates.pager(items, page, 500); //get a paged version of the results		
 		return '<div class="music-list song-list"><ul class="songs">' + templates.songRowTmpl(items) + '</ul></div>';
+		
 	},	
+	
 	songRowTmpl: function(items){ 
-		var out = '';
-		var c = 0;
+		
+		var out = '', c = 0;
 		for(var i in items){
-			var song = items[i];
-			var songid = (song.id != undefined ? song.id : song.songid); 
-			
-			if(song.duration == 0){ //if it is a file?
-				var songmenu = '';	
-			} else {
-				var songmenu = '<div class="item" data-task="download-song" data-file="' + song.file + '"><i class="icon-download-alt"></i> Download Song</div>' + 
-							'<div class="item" data-task="play-song-in-browser" data-file="' + song.file + '"><i class="icon-play"></i> Play in Browser</div>' + 
-							'<div class="item" data-task="play-parent-song"><i class="icon-play"></i> Song</div>' + 
-							'<div class="item" data-task="play-parent-album"><i class="icon-play"></i> Album</div>';
-			}
-			
-			var attrs = 'data-songid="' + songid + '" data-albumid="' + song.albumid + '" data-artistid="' + song.albumid + '" data-position="' + c + '"';
+			var song = items[i], songmenu = '', songid, rowAttr, dragAttr; //vars
+			songid = (song.id != undefined ? song.id : song.songid); //make uniform
 			if(song.track > 200){ song.track = 0; } //fix track number bug
-			
-			if(song.id == undefined){
-				attrs += ' data-file="' + song.file + '"';
-			}
-			out += '<li class="song clearfix" ' + attrs + '>' + 
+
+			//make main row attributes
+			rowAttr = {
+				'position': c
+			};
+			//make draggable element attributes
+			dragAttr = {
+				'type': 'file',
+				'id': song.file
+			};
+						
+			//if in lib, add id else add file
+			if(songid == undefined){ 
+				rowAttr.file = song.file; 
+			} else { 
+				//load up with meta
+				rowAttr.songid = songid;
+				rowAttr.albumid = song.albumid;
+				rowAttr.artistid = song.artistid;
+				//add songid to dragger
+				dragAttr.songid = songid; 
+				//also add the menu
+				songmenu = '<a class="more-button song-more" data-task="song" data-id="' + songid + '"><i class="icon-align-justify"></i></a>';
+			}			
+						
+			//html
+			out += '<li class="song clearfix" ' + templates.dataToAttr(rowAttr) + '>' + 
 					    '<div class="col col-levels"><div class="levels"><span></span></div></div>' + 
 					    '<div class="col col-track"><span class="text">' + (song.track > 0 ? song.track : '&nbsp;') + '</span></div>' + 
-					    '<div class="col col-name"><span class="protector" data-type="file" data-id="' + song.file + '"></span><span class="text">' + song.label + '<span></div>' + 
+					    '<div class="col col-name"><span class="protector" ' + templates.dataToAttr(dragAttr) + '></span><span class="text">' + song.label + '<span></div>' + 
 					    '<div class="col col-duration"><span class="text">' + (song.duration > 0 ? templates.secondsToHms( song.duration ) : '&nbsp;')  + '</span></div>' + 
 					    '<div class="col col-artist"><span class="text">' + song.artist + '</span></div>' + 
 					    '<div class="col fill-item">' + 
-					    	(songmenu != '' ? '<div class="playcount" title="play count">' + song.playcount + '</div>' + 
-							'<div class="wui-menu song-menu" title="song-actions"><div class="wui-menu-items" ' + attrs + '> ' + songmenu + '</div></div>' : '') +
-							'<a class="reorder-handle"></a>'
+					    	(songmenu != '' ? '<div class="playcount" title="play count">' + song.playcount + '</div>' + songmenu : '') +		
+							'<a class="reorder-handle"><i class="icon-move"></i></a>' + 
 						'</div>' + 
 					'</li>';
 			c++;
 		}		
 		return out;
+		
 	},
 				
 	
@@ -340,11 +354,13 @@ var templates = {
 					'<div id="now-playing-block-inner">' + 
 						'<img src="' + templates.imagePath( song.thumbnail ) +  '" class="playing-thumb" />' + 
 						'<div class="song-meta">' +
-							'<h2><span class="playing-title download-song" title="download song" data-id="' + song.id + '">' + song.label + '</span></h2>' + 
-							(song.artist != '' ? '<p><span class="playing-sub-title search-me" title="More from this artist">' + song.artist + '</span></p>' : '') + 
+							'<h2><span class="playing-title download-song" title="download song" data-id="' + song.id + '">' + song.label + '</span></h2><p>' + 
+							(song.artist != '' ? '<span class="playing-sub-title search-me" title="More from this artist">' + song.artist + '</span>' : '') + 
+							 ' <span class="playing-more-button more-button" data-task="song" data-id="' + song.id + '"><i class="icon-align-justify"></i> More</span>' + 
+							 '</p>' + 
 						'</div>' + 
 						'<div class="playing-mid">' + 
-						  '<span class="playing-tab">Related Music</span>' + 
+						  '<span class="playing-tab">Related Music</span>' + 						 
 						'</div>' +   
 						'<div class="sub-container clearfix">' + similarhtml + '</div>' + 
 					'</div>' + 
@@ -434,9 +450,18 @@ var templates = {
 	 * 
 	 */
 	
+	//structure
+	menuStructure: {
+		   classes: "xbmcwui-menu",
+		   data: { },
+		   items: []	
+	},
+	
 	
 	//menu buttons
 	makeButtonMenu: function(structure){
+		
+		var settings = templates.menuStructure; structure = jQuery.extend(settings, structure);
 		
 		var items = structure.items, btns = '';
 		$(items).each(function(i,o){
@@ -449,14 +474,34 @@ var templates = {
 	//wui menu
 	makeWuiMenu: function(structure){
 		
+		var settings = templates.menuStructure; structure = jQuery.extend(settings, structure);
+		
 		var items = structure.items, btns = '';
 		$(items).each(function(i,o){
-			btns += '<div class="item ' + o.classes + '" ' + templates.dataToAttr(o.data) + '>' + o.title + '</a>';			
+			btns += '<div class="item ' + o.classes + '" ' + templates.dataToAttr(o.data) + '>' + o.title + '</div>';			
 		});
 		return '<div class="wui-menu ' + structure.classes + '" ' + templates.dataToAttr(structure.data) + '><div class="wui-menu-items">' + btns + '</div></div>';
 		
 	},	
 	
+	//wui menu
+	makeDialogMenu: function(structure){
+		
+		var settings = templates.menuStructure; structure = jQuery.extend(settings, structure);
+		
+		var items = structure.items, btns = '';
+		$(items).each(function(i,o){
+			btns += '<li><a class="item ' + o.classes + '" ' + templates.dataToAttr(o.data) + '>' + 
+						(o.icon != undefined ? '<i class="icon-' + o.icon + '"></i>' : '') + o.title + 
+					'</a></li>';			
+		});
+		return '<ul class="dialog-menu ' + structure.classes + '" ' + templates.dataToAttr(structure.data) + '>' + btns + '</ul>';
+		
+	},	
+	
+	/********************************************************************************************
+	 * Helpers
+	 ********************************************************************************************/
 	
 	
 	
@@ -468,12 +513,6 @@ var templates = {
 		}
 		return data;
 	},
-	
-	
-	
-	/********************************************************************************************
-	 * Helpers
-	 ********************************************************************************************/
 	
 
 	

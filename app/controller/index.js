@@ -23,9 +23,20 @@ var mainapp = {
 	//Start the request
 	
 	init: function(){
-		
-		mainapp.screenLog('Loading Songs' );	
+			
 		mainapp.notify('start', 'Loading Music' );
+		
+		
+		//show loading dialog
+		mainapp.dialog('<p class="loading">Loading the music library</p>', { 
+			title: 'Loading Application', 
+			height: 120
+		});
+		//if it has been 10secs update the user
+		setTimeout(function(){
+			$('#dialog p').html('Still loading...')
+		}, 10000);
+		
 		
 		xbmcapi.getActivePlayers();
 		mainapp.bodyBlur();
@@ -44,7 +55,7 @@ var mainapp = {
 	
 	songsCallback: function(result){	
 		
-		$('#dialog').html('Reading...' );	
+		//$('#dialog').html('Reading...' );	
 		
 		xbmcapi.parseMusic( mainapp.initApp );	
 		
@@ -171,9 +182,10 @@ var mainapp = {
 		
 		var settings = {
 			autoOpen: false,
-			height: 300,
+			height: "auto",
 			width: 350,
-			modal: true 
+			modal: true ,
+			resizable: false
 		};
 		
 		settings = jQuery.extend(settings, options);
@@ -192,6 +204,9 @@ var mainapp = {
 	 */	
 	dialog: function(content, options){
 		
+		$( mainapp.dialogSelector ).dialog( "option", "height", "auto"); 
+		$( mainapp.dialogSelector ).dialog( "option", "title", " ");
+		
 		//set content and options
 		$( mainapp.dialogSelector ).html(content);
 		$( mainapp.dialogSelector ).dialog( "option", options );
@@ -199,6 +214,7 @@ var mainapp = {
 		//fix scrollTo issue with dialog		
 		$( mainapp.dialogSelector ).bind( "dialogopen", function(event, ui) {			
 			$('.ui-widget-overlay, .ui-dialog').css('position', 'fixed');
+			$('.dialog-menu a:last').addClass('last');
 		});
 		
 		//open
@@ -264,13 +280,7 @@ $(document).ready(function(){
 	
 	//get dialog ready for action
 	mainapp.dialogInit();
-	
-
-	//show loading dialog
-	mainapp.dialog('<p>Building a local Music Library</p>', { title: 'Loading Application', height: 150 });
-	
-	
-	
+		
 	//start it up
 	mainapp.init();	
 	

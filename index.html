@@ -15,8 +15,7 @@
 	<!-- jQuery and common jquery libs -->	
 	<script src="lib/common.js"></script>
 	<script src="lib/jquery-ui/js/jquery-ui-1.8.18.custom.min.js"></script>
-	<script src="lib/soundmanager/script/soundmanager2-nodebug-jsmin.js"></script>
-	<!-- <script src="lib/swfobject.js"></script> -->	
+	<script src="lib/soundmanager/script/soundmanager2-nodebug-jsmin.js"></script>	
 	
 	<!-- API -->	
 	<script src="app/api/xbmcapi.js"></script>
@@ -102,23 +101,14 @@
 	
 	   <div id="content">
 	   	<div id="content-target">
-	   		<div id="loading-splash">
-			
-				
-				<div id="screen-log">
-					<div>Loading your smart web remote...</div>
-					<div>Not Loading? <a href="/">click to reload</a></div>
-				</div>								
-			</div>
-			
-	
+		
 	    </div>
 	   </div>
 	
 	
 	
 		<footer><div id="player">
-		  
+		  <h2 class="player-toggle action-toggle-player" title="Click to change to Browser mode"><i class="icon-resize-full"></i>XBMC Player</h2>	
 		  <div class="player-right">
 		  	<div id="time">
 		  		<span class="time-current">0:00</span> / <span class="time-duration">0:00</span>
@@ -134,8 +124,7 @@
 						</div>
 						<i class="icon-volume-down"></i>
 					</div>
-				</li>	
-				<li class="action action-toggle-player" title="Switch to browser player controls">xbmc</li>	  		
+				</li>	  		
 		  	</ul>
 		  </div>
 		  
@@ -166,7 +155,7 @@
 		
 		
 		<div id="browser-player">	
-			  
+		  <h2 class="player-toggle action-toggle-player" title="Click to change to XBMC mode"><i class="icon-resize-full"></i>Browser Player</h2>	  
 		  <div class="player-right">
 		  	<div id="browser-time">
 		  		<span class="time-current">0:00</span> / <span class="time-duration">0:00</span>
@@ -182,8 +171,7 @@
 						</div>
 						<i class="icon-volume-down"></i>
 					</div>
-				</li>	
-				<li class="action action-toggle-player" title="Switch to XBMC player controls">browser</li>	  		
+				</li>	 		
 		  	</ul>
 		  </div>
 		  

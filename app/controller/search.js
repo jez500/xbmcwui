@@ -79,7 +79,7 @@ var search = {
 			out = '<div class="content-page"><h3>No Results Found</h3><p>Try a different keyword or <a href="#" class="action-update-music">update the music library</a></p></div>';
 		}
 		
-		router.buildPage( 'op=search&q=' + query, out );
+		router.buildPage( 'op=search&q=' + query, '<div id="search-result">' + out + '</div>' );
 	},
 	
 	binds: function(){

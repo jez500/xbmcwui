@@ -258,7 +258,8 @@ var nowplaying = {
 		
 		nowplaying.initBrowserProgressBar();
 		
-
+		//refresh playlist cache
+		xbmcapi.getCurrentPlaylist(function(){});
 		
 	}
 	

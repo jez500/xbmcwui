@@ -330,23 +330,20 @@ var xbmcmusic = {
 		$('.op-albums').live('click', function(e){ e.preventDefault(); xbmcmusic.getAlbums();  });
 		$('.op-songs').live('click', function(e){ e.preventDefault(); xbmcmusic.getSongs();  });
 			
-		
-		$('.album-item .cover:not(.ui-draggable)').liveDraggable( xbmcmusic.dragOptions );
-		
-		$('.custom-playlist-list li .protector:not(.ui-draggable), .library-list li .protector:not(.ui-draggable)').liveDraggable( xbmcmusic.dragOptions );
-		
-		$('.artist-list .covers:not(.ui-draggable)').liveDraggable( xbmcmusic.dragOptions );
-		
+		//draggables
+		$('.album-item .cover:not(.ui-draggable)').liveDraggable( xbmcmusic.dragOptions );		
+		$('#search-result ul.songs li .protector:not(.ui-draggable), .custom-playlist-list li .protector:not(.ui-draggable), .library-list li .protector:not(.ui-draggable)').liveDraggable( xbmcmusic.dragOptions );		
+		$('.artist-list .covers:not(.ui-draggable)').liveDraggable( xbmcmusic.dragOptions );		
 		$('.genre-list .covers:not(.ui-draggable)').liveDraggable( xbmcmusic.dragOptions );
 		
+		//download song
 		$('.download-song').live('click', function(){ 
 			var song = xbmcapi.getSong($(this).attr('data-id'));
 			xbmcapi.prepareDownload( song.file, router.download ); 
 		});
 		
 		
-		//sortable playlist items
-	
+		//sortable playlist items	
 		$('#playlist ul.songs:not(.ui-sortable)').live('mouseover', function(){		//songs	
 			$(this).sortable({
 				'handle' : '.reorder-handle',
@@ -370,7 +367,7 @@ var xbmcmusic = {
 		var playParams = xbmcmusic.playDefaults;
 		
 		//song rows - @TODO - test if browser allows double click
-		$('.library-list .tracks li').live('dblclick', function(e){ 	
+		$('.library-list .tracks li, #search-result ul.songs li').live('dblclick', function(e){ 	
 			e.preventDefault();
 			var p = $(this);	
 			browserplayer.setPlayer('xbmc');
@@ -438,11 +435,7 @@ var xbmcmusic = {
 			var p = $(this);	
 			xbmcapi.playPlaylistPosition(p.attr('data-position'), nowplaying.update ); 
 		});	
-		$('.playlist-list .song-list li').live('click', function(e){ 
-			e.preventDefault();
-			//$('.playlist-list .song-list li').removeClass('selected');
-			//$(this).addClass('selected');
-		});	
+
 		
 		//remove item button
 		$('.op-playlist-remove-item').live('click', function(e){
@@ -598,8 +591,152 @@ var xbmcmusic = {
 			  }		  
 	    });
 		
+	    
+	    
+	    /*
+	     * Handles most more button clicks
+	     *  more buttons open a dialog this mainly defines those
+	     */
+	    $('.more-button').live('click', function(e){
+			  e.preventDefault();
+			  
+			  var o = $(this);
+			  var task = o.attr('data-task');
+			  var id = o.attr('data-id');    	
+			  
+			  if(task == 'song'){				  
+				  var song = xbmcapi.getSong(id);
+				  var q = song.label + (song.artist != undefined ? ' ' + song.artist : '' );
+				  var menu = {
+						  classes: "music-actions",	 
+						  data: {'id': id, type: 'song' },
+						  items: [ 
+						       { classes: "action", data: { task: "download" }, title: "Download Song", icon: 'download-alt' },
+						       { classes: "action", data: { task: "playlist-add-song" }, title: "Add song to a playlist", icon: 'plus-sign' },
+						       { classes: "action", data: { task: "playlist-play-song" }, title: "Play song and album", icon: 'plus-sign' },
+						       { classes: "action", data: { task: "youtube-search" }, title: "Music Videos", icon: 'facetime-video'},
+						       { classes: "action", data: { task: "google-search" }, title: "Google Search", icon: 'search' },
+						       { classes: "action", data: { task: "close" }, title: "Cancel", icon: 'remove-sign' },
+						  ]
+				  };
+				  var content = templates.makeDialogMenu(menu);
+				  mainapp.dialog(content, {title: "Song Options"});
+				  
+			  }
+			  
+			  if(task == 'album'){
+				  var album = xbmcapi.getAlbum(id);
+				  var q = album.label + (album.artist != undefined ? ' ' + album.artist : '' );
+				  var menu = {
+						  classes: "music-actions",	
+						  data: {'id': id, type: 'album' },
+						  items: [ 
+						       { classes: "action", data: { task: "playlist-add-album" }, title: "Add album to a playlist", icon: 'plus-sign' },
+						       { classes: "action", data: { task: "playlist-play-album" }, title: "Play album", icon: 'play' },
+						       { classes: "action", data: { task: "youtube-search" }, title: "Music Videos", icon: 'facetime-video'},
+						       { classes: "action", data: { task: "google-search" }, title: "Google Search", icon: 'search' },
+						       { classes: "action", data: { task: "close" }, title: "Cancel", icon: 'remove-sign' },
+						  ]
+				  };
+				  var content = templates.makeDialogMenu(menu);
+				  mainapp.dialog(content, {title: "Album Options"});				  
+			  }
+			  			
+			  
+			  if(task == 'artist'){
+				  var album = xbmcapi.getArtist(id);
+				  var menu = {
+						  classes: "music-actions",	
+						  data: {'id': id, type: 'artist' },
+						  items: [ 
+						       { classes: "action", data: { task: "playlist-add-artist"  }, title: "Add artist to a playlist", icon: 'plus-sign' },
+						       { classes: "action", data: { task: "playlist-play-artist" }, title: "Play artist", icon: 'plus-play' },
+						       { classes: "action", data: { task: "youtube-search" }, title: "Music Videos", icon: 'facetime-video'},
+						       { classes: "action", data: { task: "google-search" }, title: "Google Search", icon: 'search' },
+						       { classes: "action", data: { task: "close" }, title: "Cancel", icon: 'remove-sign' },
+						  ]
+				  };
+				  var content = templates.makeDialogMenu(menu);
+				  mainapp.dialog(content, {title: "Artist Options"});					  
+			  }			  
+			  
+	    });
+	    
 		
-		
+	    
+	    /*
+	     * Dialog song cicks
+	     */
+	    $('.music-actions a').live('click', function(e){
+			  e.preventDefault();
+			  
+			  var o = $(this), p = o.parent().parent();
+			  var task = o.attr('data-task');
+			  var type = p.attr('data-type');
+			  var id = p.attr('data-id');
+			  
+			  mainapp.dialogClose();
+			  
+			  if(task == 'close'){				  
+				  return;
+			  }			  
+			  
+			  //get relative data
+			  var q, artistid, albumid;
+			  if(type == 'album'){	
+				  var album = xbmcapi.getAlbum(id);
+				  q = album.label + (album.artist != undefined ? ' ' + album.artist : '' );	
+				  artistid = album.artistid; albumid = album.albumid;
+			  }		  
+			  if(type == 'song'){
+				  var song = xbmcapi.getSong(id);
+				  if(song.file == undefined){ song.file = o.attr('data-file');}	
+				  q = song.label + (song.artist != undefined ? ' ' + song.artist : '' );
+				  artistid = song.artistid; albumid = song.albumid;
+			  }			  
+			  if(type == 'artist'){	
+				  var artist = xbmcapi.getArtist(id);
+				  q = artist.label;
+				  artistid = artist.artistid;
+			  }		
+			  var idname = type + 'id';
+			  console.log(id, type, o, p);
+			  
+			  //actions
+			  if(task == 'download' && type == 'song'){					  			    
+				  xbmcapi.prepareDownload( song.file, router.download );
+			  }			  
+			  if(task == 'youtube-search'){					  
+				  var url = 'http://www.youtube.com/results?search_query=' + encodeURIComponent(q);
+				  router.externalUrl(url);					
+			  }			  
+			  if(task == 'google-search'){					  
+				  var url = 'https://www.google.com/search?q=' + encodeURIComponent(q);
+				  router.externalUrl(url);					
+			  }			
+			  if(task == 'playlist-add-song' && type == 'song'){					  
+				  playlists.addMusicToPlaylistDialog( 'songid', id);
+			  }					  
+			  if(task == 'playlist-play-song' && type == 'song'){					  
+				  playlists.addMusicToPlaylistDialog( 'albumid', albumid, song.file);
+
+			  }				  
+			  if(task == 'playlist-add-album' && albumid > 0){					  
+				  playlists.addMusicToPlaylistDialog( idname, albumid);
+			  }		
+			  if(task == 'playlist-add-album-item' && o.attr('data-id') > 0){	//row contains id rather than parent				  
+				  playlists.addMusicToPlaylistDialog( 'albumid', o.attr('data-id'));
+			  }				  
+			  if(task == 'playlist-play-album' && album.albumid != undefined){					  
+				  playlists.addMusicToPlaylistDialog( idname, albumid, 'first' );
+			  }				  
+			  if(task == 'playlist-add-artist' && artistid > 0){					  
+				  playlists.addMusicToPlaylistDialog( idname, artistid);
+			  }	
+			  if(task == 'playlist-play-artist' && artistid > 0){					  
+				  playlists.addMusicToPlaylistDialog( idname, artistid, 'first' );
+			  }			  
+	    });		
 		
 		
 		

@@ -92,6 +92,7 @@ var router = {
 		window.location.href = path;
 	},
 	
+	//deprecated
 	playInBrowser: function(plid, position){
 		
 		var pl = playlists.getPlaylist(plid);
@@ -100,36 +101,16 @@ var router = {
 		
 		router.localPlay = sm.createSound({
 		       id:'song'+song.songid,
-		       url:path //,
-		      // onplay:self.events.play,
-		      // onstop:self.events.stop,
-		      // onpause:self.events.pause,
-		      // onresume:self.events.resume,
-		     //  onfinish:self.events.finish
+		       url:path 
 		      });
 		
 		router.localPlay.play();
 		
-//		var dewp = document.getElementById("dewplayerjs");
-//		console.log(path);
-//		
-//		$('#browser-player .player_wrapper').html('<div id="dewplayer_content"></div>'); //clear player div if pre used
-//		
-//		var flashvars = {
-//				  mp3: path,
-//				  javascript: "on",
-//				  autostart: "true"
-//				};
-//				var params = {
-//				  wmode: "transparent"
-//				};
-//				var attributes = {
-//				  id: "dewplayerjs"
-//				};
-//				swfobject.embedSWF("lib/dewplayer-vol.swf", "dewplayer_content", "242", "20", "9.0.0", false, flashvars, params, attributes);
-//				
-//				$('#browser-player-title').html(song.artist + ' | ' + song.label );
-//				$('#browser-player').fadeIn();
+	},
+	
+	
+	externalUrl: function(url){
+		window.open(url, '_blank');
 	},
 	
 	bindWuiMenu: function(){
@@ -233,8 +214,8 @@ var router = {
 			
 			
 			if(op == 'download-song'){
-				var file = $(this).attr('data-file');
-				xbmcapi.prepareDownload( file, router.download );
+//				var file = $(this).attr('data-file');
+//				xbmcapi.prepareDownload( file, router.download );
 			}
 			
 			if(op == 'play-song-in-browser'){

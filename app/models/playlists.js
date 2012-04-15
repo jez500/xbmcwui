@@ -10,6 +10,7 @@ var playlists = {
 	
 	activePlaylists: [],
 	activePlid: 0,
+	xbmcNextPlay: 0,
 		
 	/*
 	 * n = name
@@ -202,13 +203,77 @@ var playlists = {
 		
 		});
 		
-		
-		
-
-		
-
-		
 	},
+	
+	
+	//playlist dialog
+	addMusicToPlaylistDialog: function( type, id, play ){
+		
+		var menu = {
+			classes: 'select-playlist',
+			items: []
+		};
+		$(playlists.activePlaylists).each(function(i,o){
+			menu.items.push({ classes: "option", data: { task: "select", 'plid': o.id }, title:  o.n  });
+		});
+		var content = templates.makeDialogMenu(menu);
+		mainapp.dialog(content, {title: 'Select a playlist'});
+		
+		//update playlist
+		xbmcapi.getCurrentPlaylist( nowplaying.update );
+		
+		//click bind
+		$('#dialog .select-playlist a').click(function(e,o){
+			e.preventDefault();				
+			
+			var plid = $(this).attr('data-plid');
+			var pl = playlists.getPlaylist(plid);
+			mainapp.dialogClose();
+			
+			var xbmcpl = xbmcapi.playlist;
+			
+			
+			
+						
+		    //add the type to the playlist
+			playlists.addItemToPlaylist(plid, type, id);
+			console.log(xbmcpl);
+			//play should be a filename if it matches, play
+			if(play != undefined && play != ''){
+				var pos = 0;
+				if(play == 'first'){
+					pos = pl.i.length;  //plays the first of the new songs added
+					if(plid == 0){ if(xbmcpl == undefined){pos = 0;} else {pos = xbmcpl.length;}  } //play first added in xbmc					
+				} else {
+					//otherwise, get posistion from filename, last match found
+					$(pl.i).each(function(i,o){ 
+						if(o.file == play){ 
+							pos = i;
+						}
+					});					
+				}
+				console.log(pos);								
+				//Play...
+				//XBMC - it takes a while to add to pl as we do 1 song at a time, so we add this delay @TODO: find a better solution
+				if(plid == 0){ 
+					playlists.xbmcNextPlay = pos;
+					setTimeout(function(){								
+						xbmcapi.playPlaylistPosition(playlists.xbmcNextPlay, nowplaying.update);
+						mainapp.notify('start', 'Now Playling in XBMC', 1);	
+					}, 3000);
+				} else { 
+					//BROWSER
+					browserplayer.playInBrowser(plid, pos);
+					browserplayer.setPlayer('browser');
+					mainapp.notify('start', 'Playling in browser', 1);							
+				}
+				return;							
+			}
+			
+			
+		});
+	},
+	
 	
 	
 	reorderPlaylist: function(e, p){
@@ -287,7 +352,7 @@ var playlists = {
 	 * Drop callback, add items to the playlist 
 	 */
 	addItemToPlaylist: function(plid, type, id){
-		console.log(plid, type, id);
+		//console.log(plid, type, id);
 		var msgType = 'Music'; //default
 		var msgPlName = 'Untitled'; //default		
 		
@@ -339,10 +404,10 @@ var playlists = {
 				if(type == 'file'){
 					var inc = 0;	
 					//add selected files
-					$('#content-target li.selected').each(function(i,s){
-						var file = $(s).attr('data-file');						 
-						newplaylistitems.push({'file' : file});
-						if(file == id){	inc = 1;	} //dragged file is included in selection
+					var selected = playlists.getSelectedSongs();					
+					$(selected).each(function(i,s){					 
+						newplaylistitems.push({'file' : s.file});
+						if(s.file == id){	inc = 1;	} //dragged file is included in selection
 					});
 					if(inc == 0){ //inc in selection
 						newplaylistitems.push({'file': id});	//add dragged item to playlist	
@@ -351,12 +416,18 @@ var playlists = {
 					xbmcmusic.selectedItems('library');	
 					msgType = 'Songs';
 				}				
+				//add song to playlist
+				if(type == 'songid'){
+					var s = xbmcapi.getSong(id); 
+					newplaylistitems.push({'file': s.file});
+					msgType = 'Song';
+				}	
 				
 				o.i = newplaylistitems;
 
 				if(plid == 0){
 					//also add to xbmc
-					xbmcapi.playlistAddMixed(0, newplaylistitems, function(){ });
+					xbmcapi.playlistAddMixed(0, newplaylistitems, function(){  });
 				} 
 			}
 			newplaylist.push(o);
@@ -368,6 +439,20 @@ var playlists = {
 	},
 	
 	
+	
+	//returns al the li's with the selected class as an array of songs
+	getSelectedSongs: function(){
+		var song, selected = [];
+		$('#content-target li.selected').each(function(i,s){
+			if($(s).attr('data-songid') != undefined){ //in library
+				song = xbmcapi.getSong($(s).attr('data-songid'));
+			} else { //not in library
+				song = {'file': $(s).attr('data-file')};
+			}
+			selected.push(song);
+		});
+		return selected;
+	},
 	
 	
 	getPlaylistPage: function(id){

@@ -267,7 +267,7 @@ var xbmcapi = {
 	},
 	
 	playPlaylistPosition: function(position, success_callback ){
-		
+		//console.log(position);
 		var params = {};
 		params.item = '{"playlistid": 0, "position" : ' + position + ' }';
 		xbmcapi.sendCommand(											
@@ -695,7 +695,7 @@ var xbmcapi = {
 		
 		//cache all those mofos!
 		xbmcapi.parsedartists = parsedArtists.artists;
-		xbmcapi.playlist = parsedArtists.playlist;		
+		//xbmcapi.playlist = parsedArtists.playlist;		
 		xbmcapi.parsedsongs = parsedArtists.albums;
 		
 		parsedArtists.genres.sort(function(a,b){ return xbmcapi.aphabeticalSort(a.label, b.label);	});
