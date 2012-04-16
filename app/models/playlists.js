@@ -11,6 +11,7 @@ var playlists = {
 	activePlaylists: [],
 	activePlid: 0,
 	xbmcNextPlay: 0,
+	tmpCallbackSettings: {}, //used to store random settings when a callback is used, maybe not the best way to pass the vars around but it works
 		
 	/*
 	 * n = name
@@ -90,7 +91,7 @@ var playlists = {
 			  }
 			  if(task == 'op-pl-play-xbmc'){
 				  xbmcapi.playlistClear(function(r){
-					  console.log('clear', r);
+					  
 					  playlists.addItemToPlaylist(0, 'playlist', plid);
 					  setTimeout(function(){
 						  xbmcapi.playPlaylistPosition(0, function(){ browserplayer.setPlayer('xbmc'); xbmcmusic.getPlayingPage(); } ); //kick off playing in 1 sec
@@ -152,14 +153,14 @@ var playlists = {
 				hoverClass: "dropper-over",
 				accept: ".protector, .covers, .cover",
 				drop: function( event, ui ) {
-					console.log(event, ui);
+					
 					var plid = $(this).attr('data-id');
 					$(ui.draggable).each(function(i,o){
 						var ob = $(o);
 						playlists.addItemToPlaylist(plid, ob.attr('data-type'), ob.attr('data-id'));
 					});
 					$(this).effect('highlight');
-					playlists.getPlaylists();	
+						
 				}
 			});	
 			
@@ -237,7 +238,7 @@ var playlists = {
 						
 		    //add the type to the playlist
 			playlists.addItemToPlaylist(plid, type, id);
-			console.log(xbmcpl);
+			
 			//play should be a filename if it matches, play
 			if(play != undefined && play != ''){
 				var pos = 0;
@@ -252,7 +253,7 @@ var playlists = {
 						}
 					});					
 				}
-				console.log(pos);								
+												
 				//Play...
 				//XBMC - it takes a while to add to pl as we do 1 song at a time, so we add this delay @TODO: find a better solution
 				if(plid == 0){ 
@@ -348,8 +349,10 @@ var playlists = {
 	},
 	
 	
-	/*
-	 * Drop callback, add items to the playlist 
+	/**
+	 * Add items to the playlist
+	 *  - Should be used as the standard way to add music
+	 *  - works with xbmc and browser playlists 
 	 */
 	addItemToPlaylist: function(plid, type, id){
 		//console.log(plid, type, id);
@@ -366,7 +369,7 @@ var playlists = {
 				
 				msgPlName = o.n; //default
 				
-				//add to a playlist FROM a playlist, wowzers!
+				//add to a playlist FROM a playlist
 				if(type == 'playlist'){
 					var clonePl = playlists.getPlaylist(id);
 					$(clonePl.i).each(function(i,s){
@@ -384,7 +387,7 @@ var playlists = {
 					msgType = 'Genre';
 				}					
 				
-				//add to local playlist
+				//add album
 				if(type == 'albumid'){
 					var thisalbum = xbmcapi.getAlbum(id); //get songs from album
 					$(thisalbum.items).each(function(i,s){
@@ -392,6 +395,7 @@ var playlists = {
 					});	
 					msgType = 'Album';
 				}	
+				//add artist
 				if(type == 'artistid'){
 					var thisalbum = xbmcapi.getArtist(id); //get songs from album
 					$(thisalbum.items).each(function(i,a){
@@ -401,6 +405,43 @@ var playlists = {
 					});		
 					msgType = 'Artist';
 				}	
+				
+				//add a folder of songs, would be nice if the json rpc did this, at least the xbmc side, code is pretty heavy for a common task :(
+				if(type == 'directory'){
+					//most of this is the callback function
+					playlists.tmpCallbackSettings.lastplid = plid;
+					xbmcapi.getDirectory( id, function(result){ //ask xbmc for the folder
+						
+						var filesList = result.files, newpl = []; 
+						filesList.sort(function(a,b){ return xbmcapi.aphabeticalSort(a.file,b.file);  }); //sort the list
+						$(filesList).each(function(i, p){ //each file
+							if(p.filetype == 'file'){ //is not folder
+								//if music, add
+								if( files.isMusic(p.file) ){ 
+									newpl.push({'file': p.file});
+								}								
+							}
+						});	
+					
+						//we should now have our new playlist, we can add it
+						if(newpl.length > 0){
+							if(playlists.tmpCallbackSettings.lastplid == 0){ //xbmc
+								xbmcapi.playlistAddMixed(0, newpl, nowplaying.update() );
+							} else { //browser
+								var pl = playlists.getPlaylist(playlists.tmpCallbackSettings.lastplid);								
+								$(newpl).each(function(idx,s){ pl.i.push(s); }); //add songs
+								$(playlists.activePlaylists).each(function(i,o){ if(o.id == pl.id){ playlists.activePlaylists[i] = pl;  } }); //add updated
+								playlists.getPlaylists(); //save updated playlist
+								mainapp.notify('start', newpl.length + ' file' + (newpl.length > 1 ? 's' : '') + ' added to the playlist', 1);
+							}
+						} else {
+							mainapp.notify('start', 'No files found', 1);
+						}
+					});	 //end callback!
+					 //exit here, our work is done
+				}
+				
+				//includes multiple selected items, looks up on songid or file
 				if(type == 'file'){
 					var inc = 0;	
 					//add selected files
@@ -432,9 +473,11 @@ var playlists = {
 			}
 			newplaylist.push(o);
 		});		
+		//update main playlist
 		playlists.activePlaylists = newplaylist;
-		console.log(newplaylist);
-		
+		//save
+		//playlists.getPlaylists();
+		//notify
 		mainapp.notify('start', msgType + ' added to playlist: ' + msgPlName, 1);
 	},
 	

@@ -82,7 +82,7 @@ var files = {
 	
 	rowWrapper: function(params){
 		return '<li class="op-file-item type-' + params.filetype + '" data-file="' + params.file + '" data-file-type="' + params.filetype + '">' + 
-					'<div data-type="file" data-id="' + params.file + '" class="protector"></div>' + 
+					'<div data-type="' + params.filetype + '" data-id="' + params.file + '" class="protector"></div>' + 
 					'<i class="' + (params.filetype == 'file' ? 'icon-file' : 'icon-folder-close') + '"></i> ' + 
 					params.label +
 				'</li>';
@@ -118,7 +118,7 @@ var files = {
 		});
 		
 		
-		$('.op-file-item.type-file .protector:not(.ui-draggable)').liveDraggable( xbmcmusic.dragOptions );
+		$('.op-file-item .protector:not(.ui-draggable)').liveDraggable( xbmcmusic.dragOptions );
 		
 		//click on a file item
 		$('.op-file-item').live('click', function(e){ 
@@ -229,7 +229,60 @@ var files = {
 	
 	playFirst: function(){
 		xbmcapi.playPlaylistPosition(0, nowplaying.update );
-	}
+	},
+	
+	
+	
+	
+	
+	
+	/**
+	 * These all just check extensions/filetypes
+	 */		
+	getExtension: function(filename) {
+	    var parts = filename.split('.');
+	    return parts[parts.length - 1];
+	}, 	
+	isMusic: function(str){
+		var ext = files.getExtension(str);
+	    switch (ext.toLowerCase()) {
+	    case 'mp3':
+	    case 'aac':
+	    case 'wma':
+	    case 'wav':
+	        return true;
+	    }
+	    return false;
+	},	
+	isVideo: function(str){
+		var ext = files.getExtension(str);
+	    switch (ext.toLowerCase()) {
+	    case 'avi':
+	    case 'mpg':
+	    case 'mpeg':
+	    case 'mp4':
+	    case 'flv':
+	    case 'wmv':
+	    case 'mov':
+	    case 'mkv':	    	
+	        return true;
+	    }
+	    return false;
+	},		
+	isPhoto: function(str){
+		var ext = files.getExtension(str);
+	    switch (ext.toLowerCase()) {
+	    case 'jpg':
+	    case 'gif':
+	    case 'bmp':
+	    case 'png':
+	    case 'jpeg':	
+	        return true;
+	    }
+	    return false;
+	}	
+	
+
 	
 	
 	

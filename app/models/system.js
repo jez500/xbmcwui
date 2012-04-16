@@ -7,8 +7,8 @@
 var system = {
 	
 	getStats: function(){
-		
-		var out = '<div class="content-page">' + 
+		var out;
+		out = '<div class="content-page">' + 
 					'<h3>Library Stats</h3>' + 
 					'<div class="items">' + 
 						'<p><label>Songs: </label><span>' + xbmcapi.allsongs.length + '</span></p>' + 
@@ -16,8 +16,12 @@ var system = {
 						'<p><label>Artists: </label><span></span>' + xbmcapi.allartists.length + '</p>' + 
 					'</div>'; 
 		
+		out += '<h3>Toolbox</h3>' + 
+				'<div class="items">' + 
+					'<p><a href="#op=scan" class="op-scan-music-library">Scan music library</a></p>' + 
+				'</div>'; 		
+		
 		if(xbmcapi.nowplaying.item != undefined){	
-					out += '<h3>Now Playing</h3>';
 					out += templates.nowPlayingBlock(xbmcapi.nowplaying);								
 		}
 										
@@ -32,6 +36,11 @@ var system = {
 		
 		$('.op-stats').click(function(){
 			system.getStats();						
+		});
+		
+		$('.op-scan-music-library').live('click', function(){
+			xbmcapi.scanMusic( function(res){ mainapp.notify('start', 'Scan of music started',1); }  );
+			return false;
 		});
 		
 	}	

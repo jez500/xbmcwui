@@ -425,6 +425,20 @@ var xbmcapi = {
 	 * Music
 	 ********************************************************************************************/
 
+	
+	/**
+	 * Scan for new music
+	 */
+	scanMusic: function( success_callback ){
+		
+		xbmcapi.sendCommand(
+				xbmcapi.buildCommand('AudioLibrary.Scan', {}), 		
+				function(response){
+					success_callback(response);
+				});
+	},
+	
+	
 	/**
 	 * Play a song by first adding related to the playlist 
 	 * and then selecting the position in the playlist to play

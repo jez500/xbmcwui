@@ -408,6 +408,12 @@ var templates = {
 	
 	getPlaylistFileMissing: function(item){
 		
+		//try a filename lookup
+		if(item.artistid == undefined){
+			item = xbmcapi.getSongByFile(item.file);
+		}
+		
+		//still nothing, add placeholders
 		if(item.artistid == undefined){
 			
 			var newItem = { 
