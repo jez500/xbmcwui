@@ -64,8 +64,8 @@ var router = {
 		//remove menu active classes, modules must readd this after this has been called (prevents stale active states)
 		$('ul.nav li a').removeClass('active');
 		
-		//decorate tables
-		$('table').each(function(){ $(this).find('li:last').addClass('last'); } );
+		//decorate songs
+		$('.album-row-item').each(function(i,o){ $(o).find('ul.songs li').last().addClass('last'); });
 		
 		//music selections
 		xbmcmusic.selectedItems();	

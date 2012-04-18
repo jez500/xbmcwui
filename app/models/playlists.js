@@ -215,8 +215,9 @@ var playlists = {
 			items: []
 		};
 		$(playlists.activePlaylists).each(function(i,o){
-			menu.items.push({ classes: "option", data: { task: "select", 'plid': o.id }, title:  o.n  });
+			menu.items.push({ classes: "option", data: { task: "select", 'plid': o.id }, title:  o.n, icon: 'chevron-right'   });
 		});
+		menu.items.push({ classes: "cancel", data: { task: "close" }, title:  "Cancel", icon: 'remove-sign'  }); //cancel
 		var content = templates.makeDialogMenu(menu);
 		mainapp.dialog(content, {title: 'Select a playlist'});
 		
@@ -225,7 +226,9 @@ var playlists = {
 		
 		//click bind
 		$('#dialog .select-playlist a').click(function(e,o){
-			e.preventDefault();				
+			e.preventDefault();		
+			
+			if($(this).attr('data-task') == 'close'){ mainapp.dialogClose(); return; }
 			
 			var plid = $(this).attr('data-plid');
 			var pl = playlists.getPlaylist(plid);

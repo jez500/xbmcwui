@@ -211,18 +211,21 @@ footer {
  */
 .ui-dialog {
 	background: #323336;
-	background: rgba(50,51,54,0.9);
+	background: rgba(50, 51, 54, 0.95);
 	padding: 4px 8px 6px;
-	color: #fff !important;
+	color: white !important;
 	font-size: 15px;
+	border: 1px solid #333;
+	border-color: #555 #333 #333 #333;
+	box-shadow: 0 0 20px rgba(0,0,0,0.3);
 }
 .ui-dialog .ui-widget-header {
 	border: 0;
 	border-radius: 0;
 	border-bottom: 2px solid #6699FF;
-	font-weight: bold;
+	font-weight: normal;
 	background: none;
-	font-size: 14px;
+	font-size: 15px;
 	padding: 10px 10px;
 	margin: 0 5px;
 	color: #6699FF;
@@ -1058,7 +1061,7 @@ footer h2.player-toggle:hover {
 	cursor: pointer;
 	position: relative;
 }
-.song-list table li.last {
+.song-list li.last {
 	border-bottom: 0;
 }
 .op-file-item {

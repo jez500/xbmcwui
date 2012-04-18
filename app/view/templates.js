@@ -334,7 +334,11 @@ var templates = {
 	 * Blocks
 	 ********************************************************************************************/
 	
-	nowPlayingBlock: function(item){
+	nowPlayingBlock: function(item, player){
+		if(player == undefined){ player = 'XBMC'; } //the only use for this is the title
+		
+		if(item.item.songid == undefined){ return ''; }
+		
 		var song = item.item;
 		var similar = xbmcmusic.getSimilarMusic(song);
 		//console.log(similar);
@@ -354,9 +358,9 @@ var templates = {
 					'<div id="now-playing-block-inner">' + 
 						'<img src="' + templates.imagePath( song.thumbnail ) +  '" class="playing-thumb" />' + 
 						'<div class="song-meta">' +
-							'<h2><span class="playing-title download-song" title="download song" data-id="' + song.id + '">' + song.label + '</span></h2><p>' + 
+							'<h2><span class="playing-title download-song" title="download song" data-id="' + song.songid + '">' + song.label + '</span></h2><p>' + 
 							(song.artist != '' ? '<span class="playing-sub-title search-me" title="More from this artist">' + song.artist + '</span>' : '') + 
-							 ' <span class="playing-more-button more-button" data-task="song" data-id="' + song.id + '"><i class="icon-align-justify"></i> More</span>' + 
+							 ' <span class="playing-more-button more-button" data-task="song" data-id="' + song.songid + '"><i class="icon-align-justify"></i> More</span>' + 
 							 '</p>' + 
 						'</div>' + 
 						'<div class="playing-mid">' + 
@@ -394,10 +398,16 @@ var templates = {
 		//correct the position numbers
 		templates.positionNumbers('#playlist .song-list li');
 		
-
+		//decorate songs
+		$('.album-row-item').each(function(i,o){ $(o).find('ul.songs li').last().addClass('last'); });
+		
+		//prevent selection (doesnt play well with dblclick)
 		$( "#playlist" ).disableSelection();
 	},
 	
+	/*
+	 * remove std menu, add remove btn
+	 */
 	setPlaylistSongMenu: function(selector){
 		
 		$(selector + ' .song-menu').remove();
@@ -405,7 +415,9 @@ var templates = {
 		
 	},
 	
-	
+	/*
+	 * populate songs added via file (no meta)
+	 */
 	getPlaylistFileMissing: function(item){
 		
 		//try a filename lookup

@@ -194,6 +194,11 @@ var xbmcapi = {
 					}
 					xbmcapi.nowplaying.item = response.result.item;
 					
+					if(xbmcapi.nowplaying.item.songid == undefined){
+						xbmcapi.nowplaying.item = xbmcapi.getSongByFile(response.result.item.file);
+						xbmcapi.nowplaying.item.file = xbmcapi.uniformPath(xbmcapi.nowplaying.item.file);
+					}
+					
 					//player params
 					var playerparams = {
 						'playerid' : xbmcapi.activeplayers[0].playerid,
@@ -259,7 +264,14 @@ var xbmcapi = {
 					function(response){ 
 						var items = response.result.items;
 						xbmcapi.debug(items); 
-						xbmcapi.playlist = items;
+						//try to populate missing (if added via files not library)
+						$(items).each(function(i,o){
+							var thisitem = xbmcapi.getSongByFile(o.file);
+							if(o.songid == undefined && thisitem.file != undefined){
+								items[i] = thisitem;
+							}
+						});
+						xbmcapi.playlist = items; //cache
 						success_callback(items); 
 						}
 					);

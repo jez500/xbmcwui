@@ -71,16 +71,25 @@ var nowplaying = {
 					}					
 				}
 				
+
 				//add playing status to correct row
-				var songlist = $( ".song-list li" ); var songid, row;
+				var songlist = $( ".song-list li" ); var songid, row, file;
 				songlist.removeClass('playing');
 				songlist.each(function(i,o){
 					row = $(o);					
 					songid = row.attr('data-songid');
-					if(songid == result.item.id ){
-						row.addClass('playing');
+					if(songid == undefined){
+						file = row.attr('data-file'); 
+						if(file != undefined && file == result.item.file){
+							row.addClass('playing');
+						}							
+					} else {
+						//console.log(songid, result.item.id);
+						if(songid == result.item.songid ){
+							row.addClass('playing');
+						}						
 					}
-				});
+				});		
 				
 				//nowplaying menu
 				$(nowplaying.selNowPlaying + ' .wui-menu-items').html(  nowplaying.nowPlayingMenuItems(result) );
@@ -106,6 +115,7 @@ var nowplaying = {
 					$(nowplaying.selPlayingThumb).attr('src', templates.imagePath( result.item.thumbnail ) );
 					$(nowplaying.selPlayingTitle).html(  result.item.label ) ;
 					$(nowplaying.selPlayingSubTitle).html(  result.item.artist ) ;
+								
 					
 				}
 				
