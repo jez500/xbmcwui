@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<buildpath>
+	<buildpathentry kind="src" path="lib/jquery.mobile/demos/docs/forms"/>
+	<buildpathentry kind="src" path="lib/jquery.mobile/demos/docs/pages/dynamic-samples"/>
+	<buildpathentry kind="src" path="lib/jquery.mobile/demos/experiments/weather"/>
+	<buildpathentry kind="src" path="lib/jquery.mobile/demos/tests/speed"/>
+	<buildpathentry kind="src" path="lib/jquery.mobile/demos/tests/unit"/>
+	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
+</buildpath>

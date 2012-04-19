@@ -27,145 +27,8 @@ var playlists = {
 	//load in playlists (or defaults)
 	initPlaylist: function(){
 		
-		//add new pl
-		$('.new-playlist .icon-plus-sign').live('click', playlists.addPlaylist); //button press
-		$('#newplaylist').keypress(function(e) {  if(e.which == 13) { playlists.addPlaylist(); } }); //enter press
-		
-		//toggle add
-		$('.pl-new-toggle').click(function(){
-			$('.new-playlist').toggle();
-			$(this).toggleClass('icon-plus-sign').toggleClass('icon-minus-sign');
-		});
-		$('.new-playlist').hide();
-		
-		$('.playlist-link').live('click', function(e){
-			e.preventDefault();		
-			if($(this).attr('id') == 'pl-0'){
-				//xbmc playlist
-				browserplayer.setPlayer('xbmc');
-				xbmcmusic.getPlayingPage();
-			} else {
-				//local playlist
-				browserplayer.setPlayer('browser');
-				playlists.getPlaylistPage( $(this).attr('data-id') );
-			}
-			
-			
-		});
-		
-		//play in browser
-		$('.custom-playlist-list .tracks li').live('dblclick', function(e){ 	
-			e.preventDefault();			 
-			var p = $(this);			
-			var plid = p.closest('.custom-playlist').attr('data-id');			
-			browserplayer.playInBrowser(plid, p.attr('data-position'));
-			browserplayer.setPlayer('browser');
-			mainapp.notify('start', 'Playling in browser', 1);
-		});	
-		
-		//remove item from playlist
-		$('.custom-playlist li.song .op-playlist-remove-item').live('click', function(){ 
-			var pos = $(this).parent().parent().attr('data-position'); 
-			playlists.removePlaylistItem( pos , playlists.activePlid); 
-			$(this).remove();
-			templates.positionNumbers('.custom-playlist li.song');
-			mainapp.notify('start', 'Removed item from playlist', 1);
-		});
-		
-		
-			
-		  //bind button click actions
-		  $('.playlist-buttons a').live('click', function(e){
-			  e.preventDefault();
-			  
-			  var o = $(this), p = o.parent().parent();
-			  var task = o.attr('data-task');
-			  var plid = p.attr('data-plid');
-
-			  var pl = playlists.getPlaylist(plid);	
-			  
-				  
-			  if(task == 'op-pl-add-xbmc'){
-				  playlists.addItemToPlaylist(0, 'playlist', plid);
-				  mainapp.notify('start', 'Music from "' + pl.n + '" added to the XBMC playlist', 1);
-			  }
-			  if(task == 'op-pl-play-xbmc'){
-				  xbmcapi.playlistClear(function(r){
-					  
-					  playlists.addItemToPlaylist(0, 'playlist', plid);
-					  setTimeout(function(){
-						  xbmcapi.playPlaylistPosition(0, function(){ browserplayer.setPlayer('xbmc'); xbmcmusic.getPlayingPage(); } ); //kick off playing in 1 sec
-					  }, 1000);
-				  });
-				  mainapp.notify('start', 'XBMC playlist updated, Music started', 1);
-			  }
-			  if(task == 'op-pl-play-browser'){
-				  browserplayer.playInBrowser(plid, 0);
-				  mainapp.notify('start', 'Now playing "' + pl.n + '" in browser', 1);
-			  }
-			  if(task == 'op-pl-export'){
-				  playlists.exportPlaylist(plid);
-			  }		
-			  if(task == 'op-pl-remove'){
-				  if(confirm("Are you sure?")){
-					  playlists.removePlaylist(plid);
-					  browserplayer.setPlayer('xbmc'); 
-					  xbmcmusic.getPlayingPage(); 
-					  mainapp.notify('start', 'Playlist "' + pl.n + '" Removed', 1);
-				  }				  
-			  }
-			  if(task == 'op-pl-rename'){
-					var newname = prompt('Enter a new name', pl.n);
-					playlists.renamePlaylistItem(plid, newname);
-					playlists.getPlaylistPage(plid);
-					mainapp.notify('start', 'Playlist renamed to "' + newname + '"', 1);
-			  }	
-			  if(task == 'op-pl-clear'){
-					playlists.clearPlaylist(plid);
-					playlists.getPlaylistPage(plid);
-					mainapp.notify('start', 'Playlist "' + pl.n + '" cleared', 1);
-			  }				  
-		  });
-		
-		
-		  $('.custom-playlist ul.songs:not(.ui-sortable)').live('mouseover', function(){
-				//sortable
-				$(this).sortable({
-					'axis': 'y',
-					'delay': 0,
-					'handle' : '.reorder-handle',
-					'update' : function(e, p){ 
-						playlists.reorderPlaylist(e, p);  
-					},
-					'connectWith' : ".custom-playlist ul.songs"
-				});				  
-		  });
-		  
-
-		  
-		  //to keep all the drag binds up to date we need to do some workarounds
-		  //when drag a dragable rebind drop targets that have not been defined
-		  $('.ui-draggable').live('mousemove', function(){  
-			  
-			//add droppable
-			$('#myplaylists li a:not(.ui-droppable)').droppable({
-				activeClass: "dropper-inbound",
-				hoverClass: "dropper-over",
-				accept: ".protector, .covers, .cover",
-				drop: function( event, ui ) {
-					
-					var plid = $(this).attr('data-id');
-					$(ui.draggable).each(function(i,o){
-						var ob = $(o);
-						playlists.addItemToPlaylist(plid, ob.attr('data-type'), ob.attr('data-id'));
-					});
-					$(this).effect('highlight');
-						
-				}
-			});	
-			
-		  });
-		
+		//attach all the functionality to the dom
+		playlists.binds();
 		
 		//get storage
 		playlists.activePlaylists = $.jStorage.get('playlists', []);
@@ -176,6 +39,7 @@ var playlists = {
 			playlists.activePlaylists[1].id = playlists.hashCode(playlists.activePlaylists[1].n);
 		}
 		
+		//loads html of sidebar playlists (and saves current playlists back to to local storage)
 		playlists.getPlaylists();
 		
 
@@ -442,6 +306,7 @@ var playlists = {
 						}
 					});	 //end callback!
 					 //exit here, our work is done
+					
 				}
 				
 				//includes multiple selected items, looks up on songid or file
@@ -467,19 +332,22 @@ var playlists = {
 					msgType = 'Song';
 				}	
 				
-				o.i = newplaylistitems;
+				//some items (folders) use callbacks so we shouldnt update here
+				if(newplaylistitems.length > 0){
+					o.i = newplaylistitems;
 
-				if(plid == 0){
-					//also add to xbmc
-					xbmcapi.playlistAddMixed(0, newplaylistitems, function(){  });
-				} 
+					if(plid == 0){
+						//also add to xbmc
+						xbmcapi.playlistAddMixed(0, newplaylistitems, function(){  });
+					} 
+				}
 			}
 			newplaylist.push(o);
 		});		
 		//update main playlist
 		playlists.activePlaylists = newplaylist;
-		//save
-		//playlists.getPlaylists();
+		//save any changes to storage
+		$.jStorage.set('playlists', playlists.activePlaylists);
 		//notify
 		mainapp.notify('start', msgType + ' added to playlist: ' + msgPlName, 1);
 	},
@@ -630,6 +498,153 @@ var playlists = {
 	        hash = hash & hash; // Convert to 32bit integer
 	    }
 	    return hash;
+	},
+	
+	
+	
+	
+	binds: function(){
+		
+		//add new pl
+		$('.new-playlist .icon-plus-sign').live('click', playlists.addPlaylist); //button press
+		$('#newplaylist').keypress(function(e) {  if(e.which == 13) { playlists.addPlaylist(); } }); //enter press
+		
+		//toggle add
+		$('.pl-new-toggle').click(function(){
+			$('.new-playlist').toggle();
+			$(this).toggleClass('icon-plus-sign').toggleClass('icon-minus-sign');
+		});
+		$('.new-playlist').hide();
+		
+		$('.playlist-link').live('click', function(e){
+			e.preventDefault();		
+			if($(this).attr('id') == 'pl-0'){
+				//xbmc playlist
+				browserplayer.setPlayer('xbmc');
+				xbmcmusic.getPlayingPage();
+			} else {
+				//local playlist
+				browserplayer.setPlayer('browser');
+				playlists.getPlaylistPage( $(this).attr('data-id') );
+			}
+			
+			
+		});
+		
+		//play in browser
+		$('.custom-playlist-list .tracks li').live('dblclick', function(e){ 	
+			e.preventDefault();			 
+			var p = $(this);			
+			var plid = p.closest('.custom-playlist').attr('data-id');			
+			browserplayer.playInBrowser(plid, p.attr('data-position')); 
+			browserplayer.setPlayer('browser');
+			mainapp.notify('start', 'Playling in browser', 1);
+		});	
+		
+		//remove item from playlist
+		$('.custom-playlist li.song .op-playlist-remove-item').live('click', function(){ 
+			var pos = $(this).parent().parent().attr('data-position'); 
+			playlists.removePlaylistItem( pos , playlists.activePlid); 
+			$(this).remove();
+			templates.positionNumbers('.custom-playlist li.song');
+			mainapp.notify('start', 'Removed item from playlist', 1);
+		});
+		
+		
+			
+		  //bind button click actions
+		  $('.playlist-buttons a').live('click', function(e){
+			  e.preventDefault();
+			  
+			  var o = $(this), p = o.parent().parent();
+			  var task = o.attr('data-task');
+			  var plid = p.attr('data-plid');
+
+			  var pl = playlists.getPlaylist(plid);	
+			  
+				  
+			  if(task == 'op-pl-add-xbmc'){
+				  playlists.addItemToPlaylist(0, 'playlist', plid);
+				  mainapp.notify('start', 'Music from "' + pl.n + '" added to the XBMC playlist', 1);
+			  }
+			  if(task == 'op-pl-play-xbmc'){
+				  xbmcapi.playlistClear(function(r){
+					  
+					  playlists.addItemToPlaylist(0, 'playlist', plid);
+					  setTimeout(function(){
+						  xbmcapi.playPlaylistPosition(0, function(){ browserplayer.setPlayer('xbmc'); xbmcmusic.getPlayingPage(); } ); //kick off playing in 1 sec
+					  }, 1000);
+				  });
+				  mainapp.notify('start', 'XBMC playlist updated, Music started', 1);
+			  }
+			  if(task == 'op-pl-play-browser'){
+				  browserplayer.playInBrowser(plid, 0);
+				  mainapp.notify('start', 'Now playing "' + pl.n + '" in browser', 1);
+			  }
+			  if(task == 'op-pl-export'){
+				  playlists.exportPlaylist(plid);
+			  }		
+			  if(task == 'op-pl-remove'){
+				  if(confirm("Are you sure?")){
+					  playlists.removePlaylist(plid);
+					  browserplayer.setPlayer('xbmc'); 
+					  xbmcmusic.getPlayingPage(); 
+					  mainapp.notify('start', 'Playlist "' + pl.n + '" Removed', 1);
+				  }				  
+			  }
+			  if(task == 'op-pl-rename'){
+					var newname = prompt('Enter a new name', pl.n);
+					playlists.renamePlaylistItem(plid, newname);
+					playlists.getPlaylistPage(plid);
+					mainapp.notify('start', 'Playlist renamed to "' + newname + '"', 1);
+			  }	
+			  if(task == 'op-pl-clear'){
+					playlists.clearPlaylist(plid);
+					playlists.getPlaylistPage(plid);
+					mainapp.notify('start', 'Playlist "' + pl.n + '" cleared', 1);
+			  }				  
+		  });
+		
+		
+		  $('.custom-playlist ul.songs:not(.ui-sortable)').live('mouseover', function(){
+				//sortable
+				$(this).sortable({
+					'axis': 'y',
+					'delay': 0,
+					'handle' : '.reorder-handle',
+					'update' : function(e, p){ 
+						playlists.reorderPlaylist(e, p);  
+					},
+					'connectWith' : ".custom-playlist ul.songs"
+				});				  
+		  });
+		  
+
+		  
+		  //to keep all the drag binds up to date we need to do some workarounds
+		  //when drag a dragable rebind drop targets that have not been defined
+		  $('.ui-draggable').live('mousemove', function(){  
+			  
+			//add droppable
+			$('#myplaylists li a:not(.ui-droppable)').droppable({
+				activeClass: "dropper-inbound",
+				hoverClass: "dropper-over",
+				accept: ".protector, .covers, .cover",
+				drop: function( event, ui ) {
+					
+					var plid = $(this).attr('data-id');
+					$(ui.draggable).each(function(i,o){
+						var ob = $(o);
+						playlists.addItemToPlaylist(plid, ob.attr('data-type'), ob.attr('data-id'));
+					});
+					$(this).effect('highlight');
+						
+				}
+			});	
+			
+		  });
+		  
+		  
 	}
 
 		

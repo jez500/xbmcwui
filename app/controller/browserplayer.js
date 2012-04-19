@@ -63,13 +63,14 @@ var browserplayer = {
 			var sm = soundManager;
 			
 			var last = 0;
-			
+
 			//get the path
 			xbmcapi.prepareDownload(item.file, function(path){
 				
 				if(browserplayer.localPlay.init != 1){
 					browserplayer.localPlay.stop(); //stop existing
 				}
+				
 				
 				//update change song binds
 				browserplayer.playingNewSong(item, song);
@@ -80,7 +81,8 @@ var browserplayer = {
 				       url: path,
 				       autoPlay: false,
 				       autoLoad: true,
-				       stream: true,
+				       stream: true,	
+				       onerror: function(status) { xbmcapi.debug(['SoundManager failed to load: ' + status.type, status]); },
 				       onplay: function(){
 				    	   $('body').addClass('browser-playing').removeClass('browser-paused');
 				    	   $('#pl-' + plid + ' i').removeClass('icon-chevron-right').addClass('icon-play');
@@ -114,11 +116,10 @@ var browserplayer = {
 				    	    var dur = parseInt(this.duration) / 1000;
 				    	  
 							var per = (pos / dur) * 100 ;
-							//console.log(this.duration, this.position);
+							
+							//percentage
 							per = Math.round(per);
-							//console.log(per);
-							
-							
+																					
 							browserplayer.nowplaying.player = {
 								'position' : pos,
 								'duration' : dur,
@@ -130,7 +131,7 @@ var browserplayer = {
 							$('#browser-time .time-current').html( templates.secondsToHms( pos ) );
 							$('#browser-time .time-duration').html( templates.secondsToHms( dur ) );
 							
-							//update every 3 seconds - combat conflict with dragging
+							//update 100 times per song
 							if(per != last){
 								$( "#browser-progress" ).slider('value', per );
 
@@ -150,11 +151,10 @@ var browserplayer = {
 				       		  
 				      }	
 				});
-				
-							
+											
 				browserplayer.localPlay.play();				
 				
-			} );
+			});
 			
 
 			
@@ -225,7 +225,6 @@ var browserplayer = {
 			});
 			$('#browser-player-controls .action-browser-prev').click( function(){				
 				if(browserplayer.localPlay.init != 1){
-					console.log(browserplayer.plid, (browserplayer.playPos - 1));
 					browserplayer.playInBrowser(browserplayer.plid, (parseInt(browserplayer.playPos) - 1));			
 				}				
 			});
