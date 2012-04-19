@@ -3,16 +3,21 @@ var search = {
 	
 	//wrapper for search	
 	doSearch: function(val){
-		if(val.length > 0){			
-			search.resultPage( val );	
-			$('body').addClass('search-query');
+		if(val.length > 0){		
+			if(val.length > 1){	
+				search.resultPage( val );	
+				$('body').addClass('search-query');
+				$('body').scrollTo( '0px', 300 );
+			}
+			//1 charachter search do nothing
 		} else {
 			$('body').removeClass('search-query');
 			out = '<div class="content-page"><h3>Search XBMC</h3>' + 
 					'<p>Enter a search keyword to get started</p></div>';
 			router.buildPage( 'op=search&nr=1',   out );
+			$('body').scrollTo( '0px', 300 );
 		}
-		$('body').scrollTo( '0px', 300 );
+		
 	},	
 	
 	//get result sets
