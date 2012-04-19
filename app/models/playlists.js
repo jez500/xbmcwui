@@ -149,8 +149,13 @@ var playlists = {
 		var newpl = [];
 		var pl = playlists.getPlaylist( playlists.activePlid );
 		$('.custom-playlist ul.songs li.song').each(function(i,o){
-			newpl.push({ 'file' : $(o).attr('data-file') });
-		});
+			var song = xbmcapi.getSong($(o).attr('data-songid'));
+			if(song.file == undefined){
+				newpl.push({ 'file' : $(o).attr('data-file') });
+			} else {
+				newpl.push({ 'file' : song.file });
+			}			
+		});		
 
 		$(playlists.activePlaylists).each(function(i,o){
 			if(o.id == playlists.activePlid){

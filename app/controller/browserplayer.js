@@ -6,7 +6,7 @@
 
 
 var browserplayer = {
-		
+		 
 		repeat: 'off',
 		random: 'off',
 		localPlay: { 'init': 1 },
