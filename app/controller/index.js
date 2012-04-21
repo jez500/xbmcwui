@@ -28,13 +28,13 @@ var mainapp = {
 		
 		
 		//show loading dialog
-		mainapp.dialog('<p class="loading">Loading the music library</p>', { 
+		mainapp.dialog('<p>' + mainapp.loaderAnimation + ' <span class="lt">Loading the music library</span></p>', { 
 			title: 'Loading Application', 
-			height: 120
+			height: 140
 		});
 		//if it has been 10secs update the user
 		setTimeout(function(){
-			$('#dialog p').html('Still loading...')
+			$('#dialog .lt').html('Still loading...');
 		}, 10000);
 		
 		
@@ -139,6 +139,8 @@ var mainapp = {
 	    return (pixelsFromWindowBottomToBottom < pixelsToBottom);
 
 	},
+	
+	loaderAnimation: '<div class="loader"><span></span><span></span><span></span></div>​', 
 	
 	
 	/*

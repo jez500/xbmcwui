@@ -184,18 +184,19 @@ var xbmcapi = {
 				function(response){
 					
 					//detect song change
-					xbmcapi.nowplaying.changed = 0;					
-					if(xbmcapi.nowplaying.item != undefined && response.result.item.file != xbmcapi.nowplaying.item.file){
+					xbmcapi.nowplaying.changed = 0;		
+					if(xbmcapi.nowplaying.item != undefined && xbmcapi.uniformPath(response.result.item.file) != xbmcapi.nowplaying.item.file){
 						xbmcapi.nowplaying.lastitem = xbmcapi.nowplaying.item;
 						xbmcapi.nowplaying.changed = 1;
+						
 					}
 					if(xbmcapi.nowplaying.item == undefined){
 						xbmcapi.nowplaying.changed = 1;
 					}
 					xbmcapi.nowplaying.item = response.result.item;
-					
+
 					if(xbmcapi.nowplaying.item.songid == undefined){
-						xbmcapi.nowplaying.item = xbmcapi.getSongByFile(response.result.item.file);
+						xbmcapi.nowplaying.item = $.extend(xbmcapi.nowplaying.item, xbmcapi.getSongByFile(response.result.item.file));
 						xbmcapi.nowplaying.item.file = xbmcapi.uniformPath(xbmcapi.nowplaying.item.file);
 					}
 					
@@ -682,7 +683,7 @@ var xbmcapi = {
 	
 
 	/**
-	 * Artists and Albums are retrieved via hashes
+	 * Get a single item, generally retrieved via hashes
 	 */
 	getArtist: function(id){
 		var p = {'artistid' : id};
@@ -696,7 +697,9 @@ var xbmcapi = {
 		var key = 'song' + id;
 		return xbmcapi.songById[ key ];		
 	},	
-	
+	getMusicGenre: function(id){
+		return xbmcapi.songByGenre[ id ];
+	},
 	
 	
 	

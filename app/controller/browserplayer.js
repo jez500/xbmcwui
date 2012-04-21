@@ -58,7 +58,7 @@ var browserplayer = {
 			var song = xbmcapi.getSongByFile( item.file );
 			
 			$('#myplaylists a:not(#pl-0) i').addClass('icon-chevron-right').removeClass('icon-play').removeClass('icon-pause');
-			
+	
 			//sm
 			var sm = soundManager;
 			

@@ -624,6 +624,25 @@ var xbmcmusic = {
 				  
 			  }
 			  
+			  if(task == 'genre'){
+				  var genre= xbmcapi.getMusicGenre(id);
+				  var q = id;
+				  var menu = {
+						  classes: "music-actions",	
+						  data: {'id': id, type: 'genre' },
+						  items: [ 
+						       { classes: "action", data: { task: "playlist-add-genre" }, title: "Add genre to a playlist", icon: 'plus-sign' },
+						       { classes: "action", data: { task: "playlist-play-genre" }, title: "Play genre", icon: 'play' },
+						       { classes: "action", data: { task: "youtube-search" }, title: "Music Videos", icon: 'facetime-video'},
+						       { classes: "action", data: { task: "google-search" }, title: "Google Search", icon: 'search' },
+						       { classes: "action", data: { task: "close" }, title: "Cancel", icon: 'remove-sign' },
+						  ]
+				  };
+				  var content = templates.makeDialogMenu(menu);
+				  mainapp.dialog(content, {title: id});				  
+			  }
+			  		
+			  
 			  if(task == 'album'){
 				  var album = xbmcapi.getAlbum(id);
 				  var q = album.label + (album.artist != undefined ? ' ' + album.artist : '' );
@@ -639,25 +658,24 @@ var xbmcmusic = {
 						  ]
 				  };
 				  var content = templates.makeDialogMenu(menu);
-				  mainapp.dialog(content, {title: "Album Options"});				  
-			  }
-			  			
+				  mainapp.dialog(content, {title: album.label});				  
+			  }			  
 			  
 			  if(task == 'artist'){
-				  var album = xbmcapi.getArtist(id);
+				  var artist = xbmcapi.getArtist(id);
 				  var menu = {
 						  classes: "music-actions",	
 						  data: {'id': id, type: 'artist' },
 						  items: [ 
 						       { classes: "action", data: { task: "playlist-add-artist"  }, title: "Add artist to a playlist", icon: 'plus-sign' },
-						       { classes: "action", data: { task: "playlist-play-artist" }, title: "Play artist", icon: 'plus-play' },
+						       { classes: "action", data: { task: "playlist-play-artist" }, title: "Play artist", icon: 'play' },
 						       { classes: "action", data: { task: "youtube-search" }, title: "Music Videos", icon: 'facetime-video'},
 						       { classes: "action", data: { task: "google-search" }, title: "Google Search", icon: 'search' },
 						       { classes: "action", data: { task: "close" }, title: "Cancel", icon: 'remove-sign' },
 						  ]
 				  };
 				  var content = templates.makeDialogMenu(menu);
-				  mainapp.dialog(content, {title: "Artist Options"});					  
+				  mainapp.dialog(content, {title: artist.label });					  
 			  }			  
 			  
 	    });
@@ -682,7 +700,12 @@ var xbmcmusic = {
 			  }			  
 			  
 			  //get relative data
-			  var q, artistid, albumid;
+			  var q, artistid, albumid, genreid;
+			  if(type == 'genre'){	
+				  var genreob = xbmcapi.getMusicGenre(id);
+				  q = id;	
+				  genreid = id;
+			  }				  
 			  if(type == 'album'){	
 				  var album = xbmcapi.getAlbum(id);
 				  q = album.label + (album.artist != undefined ? ' ' + album.artist : '' );	
@@ -735,7 +758,15 @@ var xbmcmusic = {
 			  }	
 			  if(task == 'playlist-play-artist' && artistid > 0){					  
 				  playlists.addMusicToPlaylistDialog( idname, artistid, 'first' );
-			  }			  
+			  }			
+			  
+			  if(task == 'playlist-add-genre' && genreid != undefined){					  
+				  playlists.addMusicToPlaylistDialog( 'genre', genreid);
+			  }	
+			  if(task == 'playlist-play-genre' && genreid != undefined){					  
+				  playlists.addMusicToPlaylistDialog( 'genre', genreid, 'first' );
+			  }				  
+			  
 	    });		
 		
 		

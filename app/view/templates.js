@@ -49,8 +49,10 @@ var templates = {
 			
 			out += '<div class="genre-item has-covers" data-type="genre">';
 			out += templates.coverGroup(cg);
+			out += '<div class="more-button meta-button" data-id="' + genre.label + '" data-task="genre">';
 			out += '<h4>' + genre.label + '</h4>';
 			out += '<p>' + genre.items.length + ' songs, ' + genre.albums.length + ' albums</p>';
+			out += '</div>';
 			out += '</div>';
 			
 		});
@@ -250,8 +252,10 @@ var templates = {
 			out += templates.firstLetterHeading(firstChar, page, c, lastFirstChar, showLetters);			
 			out += '<div class="artist-item has-covers" data-artistid="' + artist.artistid + '">';			
 			out += templates.coverGroup(cg);
-			out += '<div class="wui-icon-set-play action-queue-play" data-playtype="artistid" title="Queue and Play"></div>' +
-					templates.artistMenu(artist) + 
+			out += '<div class="wui-icon-set-play action-queue-play" data-playtype="artistid" title="Queue and Play in XBMC"></div>' +
+					  '<div class="more-button meta-button" data-id="' + artist.artistid + '" data-task="artist" title="click for more options">' + 
+					  	templates.artistMeta(artist) + 
+					  '</div>' + 
 				'</div>';	
 			
 			lastFirstChar = firstChar;
@@ -267,7 +271,7 @@ var templates = {
 		var albumList = '<div class="item action-menu-add-artist" data-task="play-parent-artist-add"><i class="icon-plus-sign"></i> <strong>Add artist to queue</strong></div>' + 
 						'<div class="item action-menu-play-artist" data-task="play-parent-artist"><i class="icon-play"></i> <strong>Play artist now</strong></div>' + 
 						'<div class="spacer"></div>';
-		var ac = 0;
+		var ac = 0;		
 		
 		for(var i in artist.items){
 			var album = artist.items[i];
@@ -276,14 +280,35 @@ var templates = {
 			ac++;
 		}
 		
+		
+		
 		return '<div class="meta wui-menu">' + 
-					'<h4>' + artist.label + '</h4><p>' + ac + ' Albums</p>' + 
+					 templates.artistMeta(artist) + 					
 					'<div class="wui-menu-items" data-artistid="' + artist.artistid + '">' + albumList + '</div>' + 
 				'</div>';
 		
 	},
 	
 	
+	artistMeta: function(artist){
+		var songcount = templates.artistSongCount(artist);
+		return '<h4>' + artist.label + '</h4>' + 
+				'<p>' +
+					songcount + ' Song' + templates.isPlural(songcount, 's', '') + ', ' + 
+					artist.items.length + ' Album' + templates.isPlural(artist.items.length, 's', '') + 
+				'</p>';		
+	},
+	
+	//get song count from artist
+	artistSongCount: function(artist){		
+		var songcount = 0;
+		$(artist.items).each(function(i,o){ 
+			songcount = songcount + o.items.length;
+		});
+		return songcount;
+	},
+	
+
 	
 	
 	/**
@@ -521,7 +546,10 @@ var templates = {
 	 * Helpers
 	 ********************************************************************************************/
 	
-	
+	//is plural
+	isPlural: function(count, yes, no){
+		return (parseInt(count) == 1 ? no : yes );
+	},	
 	
 	//turns a data object into an attribute string
 	dataToAttr: function(items){

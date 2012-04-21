@@ -98,9 +98,9 @@ var playlists = {
 			var pl = playlists.getPlaylist(plid);
 			mainapp.dialogClose();
 			
-			var xbmcpl = xbmcapi.playlist;
-			
-			
+			//cache some items before we add
+			var xbmcpl = xbmcapi.playlist;			
+			var browserpos = pl.i.length;
 			
 						
 		    //add the type to the playlist
@@ -110,7 +110,7 @@ var playlists = {
 			if(play != undefined && play != ''){
 				var pos = 0;
 				if(play == 'first'){
-					pos = pl.i.length;  //plays the first of the new songs added
+					pos = browserpos;  //plays the first of the new songs added
 					if(plid == 0){ if(xbmcpl == undefined){pos = 0;} else {pos = xbmcpl.length;}  } //play first added in xbmc					
 				} else {
 					//otherwise, get posistion from filename, last match found
@@ -130,6 +130,7 @@ var playlists = {
 						mainapp.notify('start', 'Now Playling in XBMC', 1);	
 					}, 3000);
 				} else { 
+					console.log(plid, pos);
 					//BROWSER
 					browserplayer.playInBrowser(plid, pos);
 					browserplayer.setPlayer('browser');
