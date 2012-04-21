@@ -931,12 +931,96 @@ footer h2.player-toggle:hover {
 .wui-icon-set-play {
 	width: 29px;
 	height: 24px;
-	display: block;
+	display: none;
 	background: url(gsprites.png) -358px -64px no-repeat;
 	cursor: pointer;
 }
 
 
+
+/* item hover list */
+.item-hover-list {
+	font-size: 15px;
+	position: absolute;
+	top: 120px;
+	z-index: 100;
+	left: 13px;
+	border: 1px solid #AAA;
+	background: rgba(255, 255, 255, 0.9);
+	padding: 2px 5px;
+	box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+	color: #666;
+	display: none;
+}
+
+.genre-item .item-hover-list,
+.artist-item .item-hover-list {
+	top: 80px;
+}
+.album-list .item-hover-list {
+	top: 95px;
+	left: -8px;	
+}
+.music-list ul.songs .item-hover-list,
+.album-list ul.songs .item-hover-list {
+	top: 5px;
+	right: 0px;
+	left: auto;
+	border: 0;
+	box-shadow: none;
+	color: #eee;
+	background: none;
+	display: block;
+}
+.album-list ul.songs li:hover .item-hover-list {
+	color: #bbb;
+}
+
+.music-list ul.songs .item-hover-list .icon-play,
+.album-list ul.songs .item-hover-list .icon-play {
+	display: none;
+}
+.genre-item:hover .item-hover-list,
+.artist-item:hover .item-hover-list,
+.album-item:hover .item-hover-list {
+	display: block;
+}
+
+.item-hover-list i {
+	display: inline-block;
+	padding: 1px 6px;
+	cursor: pointer;
+}
+.item-hover-list i:hover {
+	color: #ED8335;
+}
+.browser-player .item-hover-list i:hover {
+	color: #2FB8C8;
+}
+
+/* fav status */
+.status-fav .item-hover-list i.icon-thumbs-up,
+.status-not-fav .item-hover-list i.icon-thumbs-down {
+	color: #ED8335;
+}
+.browser-player .status-fav .item-hover-list i.icon-thumbs-up,
+.browser-player .status-not-fav .item-hover-list i.icon-thumbs-down {
+	color: #2FB8C8;
+}
+.status-not-fav .more-button h4,
+.status-not-fav img {
+	opacity: 0.5;
+}
+.status-fav h4 {
+	color: #ED8335;
+}
+.browser-player .status-fav h4 {
+	color: #2FB8C8;
+}
+
+#thumbs-up-result h4 {
+	color: #333 !important;
+}
 
 
 
@@ -1006,7 +1090,7 @@ footer h2.player-toggle:hover {
 }
 .artist-item:hover .wui-icon-set-play,
 .album-item:hover .wui-icon-set-play {
-	display: block;
+	display: none;
 }
 .album-item .magic-box,
 .album-item img {
@@ -1271,6 +1355,8 @@ body .song-list li.selected,
 .song-list li:hover .op-playlist-remove-item {
 	display: block;
 }
+#thumbs-up-result .reorder-handle,
+#search-result .reorder-handle,
 .library-list .song-list li a.reorder-handle,
 body .song-list li.playing .reorder-handle,
 body .song-list li.playing .op-playlist-remove-item {

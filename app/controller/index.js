@@ -268,6 +268,8 @@ $(document).ready(function(){
 	router.bindWuiMenu();
 	
 	playlists.initPlaylist();
+	
+	favourites.binds();
 
 	//sound manager	
 	soundManager.url = '/lib/soundmanager/swf/';

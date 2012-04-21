@@ -46,13 +46,13 @@ var templates = {
 					'id': genre.label,
 					'items': genre.albums
 			};	
-			
-			out += '<div class="genre-item has-covers" data-type="genre">';
+
+			out += '<div class="genre-item has-covers ' + favourites.favClasses('genre', genre.label) + '" data-type="genre">';
 			out += templates.coverGroup(cg);
 			out += '<div class="more-button meta-button" data-id="' + genre.label + '" data-task="genre">';
 			out += '<h4>' + genre.label + '</h4>';
 			out += '<p>' + genre.items.length + ' songs, ' + genre.albums.length + ' albums</p>';
-			out += '</div>';
+			out += '</div>' + templates.itemHoverList('genre', genre.label); 
 			out += '</div>';
 			
 		});
@@ -62,7 +62,7 @@ var templates = {
 	},	
 
 			
-		
+
 	
 	
 	/********************************************************************************************
@@ -120,9 +120,10 @@ var templates = {
 	},
 		
 	albumItemTemplate: function(album){
-		return '<div class="album-item" data-artistid="' + album.artistid + '" data-albumid="' + album.albumid + '">' + 
-					'<div class="wui-icon-set-play action-queue-play" data-playtype="albumid" title="Queue and Play"></div>' + 
-						//'<div class="magic-box"></div>' + 
+		var status = favourites.getStatus('album', album.albumid);
+		var classes = (status > 0 ? ' status-fav' : (status < 0 ? ' status-not-fav' : ''));
+		
+		return '<div class="album-item' + classes + '" data-artistid="' + album.artistid + '" data-albumid="' + album.albumid + '">' + 
 						'<div class="cover" data-type="albumid" data-id="' + album.albumid + '">' + 						
 							'<img src="' +  templates.imagePath(album.thumbnail) + '" class="thumb" />' + 
 						'</div>' + 
@@ -130,18 +131,24 @@ var templates = {
 							'<h4>' + album.label + '</h4>' + 
 							'<p>' + album.artist + '</p>' + 
 							'<p class="meta">' + (album.year > 0 ? album.year : '') + '</p>' + 	
-							/*
-							'<div class="wui-menu-items" data-artistid="' + album.artistid + '" data-albumid="' + album.albumid + '">' + 
-								'<div class="item" data-task="play-parent-album-add"><i class="icon-plus-sign"></i> Add Album</div>' + 
-								'<div class="item" data-task="play-parent-album"><i class="icon-play"></i> Play Album</div>' + 
-								'<div class="item" data-task="view-parent-album"><i class="icon-eye-open"></i> View Songs</div>' + 							
-								'<div class="item" data-task="search-query" data-query="' + album.artist + '"><i class="icon-search"></i> ' + album.artist + '</div>' + 
-							'</div>' + 
-							*/
 						'</div>' + 
+						templates.itemHoverList('album', album.albumid) + 
 				'</div>';
 	},	
 	
+	
+	/**
+	 * Play, Thumbs up, thumbs down
+	 */
+	itemHoverList: function(type, id){
+		
+		return '<div class="item-hover-list">' + 
+					'<i class="icon-play action-queue-play" data-playtype="' + type + 'id" title="Queue and Play"></i>' + 
+					'<i class="icon-thumbs-up favourite-button" data-type="' + type + '" data-id="' + id + '" data-status="1" title="Vote Up"></i>' + 
+					'<i class="icon-thumbs-down favourite-button" data-type="' + type + '" data-id="' + id + '" data-status="-1" title="Vote Down"></i>' + 
+				'</div>';
+		
+	},
 	
 	
 	/********************************************************************************************
@@ -189,7 +196,7 @@ var templates = {
 			}			
 						
 			//html
-			out += '<li class="song clearfix" ' + templates.dataToAttr(rowAttr) + '>' + 
+			out += '<li class="song song-item clearfix ' + favourites.favClasses('song', songid) + '" ' + templates.dataToAttr(rowAttr) + '>' + 
 					    '<div class="col col-levels"><div class="levels"><span></span></div></div>' + 
 					    '<div class="col col-track"><span class="text">' + (song.track > 0 ? song.track : '&nbsp;') + '</span></div>' + 
 					    '<div class="col col-name"><span class="protector" ' + templates.dataToAttr(dragAttr) + '></span><span class="text">' + song.label + '<span></div>' + 
@@ -198,6 +205,7 @@ var templates = {
 					    '<div class="col fill-item">' + 
 					    	(songmenu != '' ? '<div class="playcount" title="play count">' + song.playcount + '</div>' + songmenu : '') +		
 							'<a class="reorder-handle"><i class="icon-move"></i></a>' + 
+							( songid != undefined ? templates.itemHoverList('song', songid) : '' ) + 
 						'</div>' + 
 					'</li>';
 			c++;
@@ -250,9 +258,9 @@ var templates = {
 			
 			//build item output
 			out += templates.firstLetterHeading(firstChar, page, c, lastFirstChar, showLetters);			
-			out += '<div class="artist-item has-covers" data-artistid="' + artist.artistid + '">';			
+			out += '<div class="artist-item has-covers ' + favourites.favClasses('artist', artist.artistid) + '" data-artistid="' + artist.artistid + '">';			
 			out += templates.coverGroup(cg);
-			out += '<div class="wui-icon-set-play action-queue-play" data-playtype="artistid" title="Queue and Play in XBMC"></div>' +
+			out += templates.itemHoverList('artist', artist.artistid) +
 					  '<div class="more-button meta-button" data-id="' + artist.artistid + '" data-task="artist" title="click for more options">' + 
 					  	templates.artistMeta(artist) + 
 					  '</div>' + 
@@ -271,8 +279,8 @@ var templates = {
 		var albumList = '<div class="item action-menu-add-artist" data-task="play-parent-artist-add"><i class="icon-plus-sign"></i> <strong>Add artist to queue</strong></div>' + 
 						'<div class="item action-menu-play-artist" data-task="play-parent-artist"><i class="icon-play"></i> <strong>Play artist now</strong></div>' + 
 						'<div class="spacer"></div>';
-		var ac = 0;		
 		
+		var ac = 0;				
 		for(var i in artist.items){
 			var album = artist.items[i];
 			albumList += '<div class="item action-menu-play-album dark" data-albumid="' + album.albumid + '" data-task="play-album">'+ 
@@ -280,13 +288,10 @@ var templates = {
 			ac++;
 		}
 		
-		
-		
 		return '<div class="meta wui-menu">' + 
 					 templates.artistMeta(artist) + 					
 					'<div class="wui-menu-items" data-artistid="' + artist.artistid + '">' + albumList + '</div>' + 
-				'</div>';
-		
+				'</div>';		
 	},
 	
 	
@@ -309,6 +314,41 @@ var templates = {
 	},
 	
 
+	
+	
+	
+	
+	/**
+	 * Mixed music set (any type)
+	 */
+	themeMixedMusicResults: function(params){
+		
+		var out = '';	
+		if(params.genres != undefined && params.genres.length > 0){
+			out += '<h3>Genres</h3>' + templates.genreList(params.genres, 0);
+		}		
+		if(params.artists != undefined && params.artists.length > 0){
+			out += '<h3>Artists</h3>' + templates.artistsList(params.artists, 0);
+		}
+		if(params.albums != undefined && params.albums.length > 0){
+			out += '<h3>Albums</h3>' + templates.albumGalleryList(params.albums, 0);
+		}
+		if(params.songs != undefined && params.songs.length > 0){
+			out += '<h3>Songs</h3>' + templates.songList(params.songs, 0);
+		}		
+		
+		if(out == '') {
+			out = '<div class="content-page mixed-results">' + 
+					'<h3>No items have been given the "<i class="icon-thumbs-up"></i> Thumbs Up" yet</h3><p></p>' + 
+				  '</div>';
+		}
+		
+		return out;
+	},
+	
+	
+	
+	
 	
 	
 	/**

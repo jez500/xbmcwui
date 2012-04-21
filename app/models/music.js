@@ -518,7 +518,7 @@ var xbmcmusic = {
 		$('.action-queue-play').live('click', function(){
 			var btn = $(this), 
 				playtype = btn.attr('data-playtype'),
-				id = btn.parent().attr('data-' + playtype );
+				id = btn.parent().parent().attr('data-' + playtype );
 				browserplayer.setPlayer('xbmc');
 				xbmcapi.playMusic({
 				 	position: 0,
