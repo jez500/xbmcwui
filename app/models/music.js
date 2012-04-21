@@ -331,8 +331,14 @@ var xbmcmusic = {
 		$('.op-songs').live('click', function(e){ e.preventDefault(); xbmcmusic.getSongs();  });
 			
 		//draggables
-		$('.album-item .cover:not(.ui-draggable)').liveDraggable( xbmcmusic.dragOptions );		
-		$('#search-result ul.songs li .protector:not(.ui-draggable), .custom-playlist-list li .protector:not(.ui-draggable), .library-list li .protector:not(.ui-draggable)').liveDraggable( xbmcmusic.dragOptions );		
+		$('.album-item .cover:not(.ui-draggable)').liveDraggable( xbmcmusic.dragOptions );	
+		
+		var songSelector = '#search-result ul.songs li .protector:not(.ui-draggable),' + 
+							'#thumbs-up-result ul.songs li .protector:not(.ui-draggable),' + 
+							'.custom-playlist-list li .protector:not(.ui-draggable),' + 
+							'.library-list li .protector:not(.ui-draggable)';		
+		$(songSelector).liveDraggable( xbmcmusic.dragOptions );		
+		
 		$('.artist-list .covers:not(.ui-draggable)').liveDraggable( xbmcmusic.dragOptions );		
 		$('.genre-list .covers:not(.ui-draggable)').liveDraggable( xbmcmusic.dragOptions );
 		
