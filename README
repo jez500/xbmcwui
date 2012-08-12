@@ -28,6 +28,12 @@ Install:
 TODO: create a zip installer and eventually get it into the xbmc repo
 
 
+Changelog
+- 12 Aug 12: Added Mini player where the entire music library is not loaded, just enough to control what is currently playing. Still needs some refinement.
+- 12 Aug 12: Fixed bug with playing bar not updating what is currently playing.
+
+
+
 
 Known Issues:
 - The bigger your music collection, the longer it takes to load (about 5 sec per 10000 songs)
