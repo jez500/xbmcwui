@@ -102,21 +102,17 @@ var nowplaying = {
 				}
 				if(result.player.speed == 0){
 					playbar.removeClass('playing').addClass('paused');
-				}		
-					
-				
+				}
+
+                //update!
+                $(nowplaying.selPlayingThumb).attr('src', templates.imagePath( result.item.thumbnail ) );
+                $(nowplaying.selPlayingTitle).html(  result.item.label ) ;
+                $(nowplaying.selPlayingSubTitle).html(  result.item.artist ) ;
+
 				//if song has changed, do this...
 				if(xbmcapi.nowplaying.changed == 1){
-					
 					//rebuild now playing block
-					$('#now-playing-region').html( templates.nowPlayingBlock(xbmcapi.nowplaying) ); 
-					
-					//update!
-					$(nowplaying.selPlayingThumb).attr('src', templates.imagePath( result.item.thumbnail ) );
-					$(nowplaying.selPlayingTitle).html(  result.item.label ) ;
-					$(nowplaying.selPlayingSubTitle).html(  result.item.artist ) ;
-								
-					
+					$('#now-playing-region').html( templates.nowPlayingBlock(xbmcapi.nowplaying) );
 				}
 				
 				

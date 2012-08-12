@@ -1,0 +1,108 @@
+
+body {
+  min-width: 780px;
+  min-height: 480px;
+}
+
+#notify {
+  position: fixed;
+  top: 3px;
+  right: 0;
+  font-size: 12px;
+  z-index: 5;
+  padding-right: 70px;
+}
+
+
+
+
+/* controls section - mainly overrides */
+#controls {
+  background: #efefef;
+  padding: 5px 5px 10px;
+  z-index: 2;
+  border-bottom: 2px solid #F39856;
+}
+
+#controls h2.title {
+  font-size: 16px;
+  margin: 0 0 0px;
+  padding: 0 0 4px;
+  border-bottom: 1px solid #fafafa;
+}
+
+#now-playing {
+  float: none;
+  width: auto;
+  padding: 5px 0 10px;
+  background: none;
+  overflow: hidden;
+}
+#player-controls {
+  background: none;
+}
+#mp-player {
+  background: url(dots-l-grey.png) 0 0 repeat;
+  overflow: hidden;
+}
+.player-left {
+  width: 250px;
+}
+.player-right {
+  width: 135px;
+}
+.player-mid {
+  padding-left: 270px;
+  padding-right: 150px;
+}
+
+#player-actions {
+  position: fixed;
+  width: 52px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: url(dots-l-grey.png) 0 0 repeat;
+  z-index: 10;
+}
+
+#time {
+  font-size: 12px;
+  padding-top: 16px;
+  color: #aaa;
+}
+
+#volume-control {
+  width: 37px;
+  left: 7px;
+  bottom: -225px;
+}
+#volume {
+  margin-left: 17px;
+}
+
+#mp-player #progress .ui-slider-handle {
+  top: -0.3em;
+  border-radius: 9px;
+  background: #999;
+  border: 1px solid #AAA;
+  height: 1em;
+  width: 1em;
+}
+#mp-player #progress:hover .ui-slider-handle {
+  background: #ed8335;
+  border-color: #ed8335;
+}
+/* playlist */
+
+/* for now I am just hiding things that are broken here
+ * @TODO: fix broken things, here is a list:
+ */
+.col-track,
+.album-header,
+.menu-buttons {
+  display: none;
+}
+.album-row .tracks ul {
+  margin-left: 0;
+}

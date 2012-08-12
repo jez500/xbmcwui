@@ -115,7 +115,7 @@ var xbmcapi = {
 	 ********************************************************************************************/
 	
 	/* send player action 
-	 * Actions dont require the response 
+	 * Actions don't require the response
 	 */
 	sendPlayerAction: function(action, success_callback ){
 						
@@ -137,12 +137,13 @@ var xbmcapi = {
 	
 	/* Get Active Players
 	 */
-	getActivePlayers: function(){
+	getActivePlayers: function( success_callback ){
 		
 		xbmcapi.sendCommand(
 				xbmcapi.buildCommand('Player.GetActivePlayers'),
 				function(response){					
-					xbmcapi.activeplayers = response.result;										
+					xbmcapi.activeplayers = response.result;
+                    if(success_callback) { success_callback( response ); };
 				}
 			);		
 		
@@ -172,7 +173,7 @@ var xbmcapi = {
 	 * Get Now Playing 
 	 */
 	getNowPlaying: 	function( success_callback ){
-						
+
 		if(xbmcapi.activeplayers[0] != undefined){
 			
 			var params = {'playerid' : xbmcapi.activeplayers[0].playerid }	;
@@ -240,7 +241,7 @@ var xbmcapi = {
 			//no active players? nothing playing
 			xbmcapi.nowplaying = [];
 			success_callback( xbmcapi.nowplaying ); 
-			
+
 			//we should keep checking for active players incase something has since started
 			xbmcapi.getActivePlayers();
 		}

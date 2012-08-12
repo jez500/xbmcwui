@@ -1,0 +1,127 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XBMCwui | Web Remote</title>
+
+  <link rel="shortcut icon" href="favicon.png">
+
+  <link rel="stylesheet" href="lib/fontawesome/css/font-awesome.css" />
+  <link rel="stylesheet" href="lib/jquery-ui/css/smoothness/jquery-ui-1.8.18.custom.css" />
+  <link rel="stylesheet" href="theme/base.css" />
+  <link rel="stylesheet" href="theme/xbmcwui.css" />
+  <link rel="stylesheet" href="theme/mini.css" />
+
+  <!-- jQuery and common jquery libs -->
+  <script src="lib/common.js"></script>
+  <script src="lib/jquery-ui/js/jquery-ui-1.8.18.custom.min.js"></script>
+
+  <!-- API -->
+  <script src="app/api/xbmcapi.js"></script>
+
+  <!-- controllers -->
+  <script src="app/controller/mini.js"></script>
+  <script src="app/controller/router.js"></script>
+  <script src="app/controller/nowplaying.js"></script>
+  <script src="app/controller/search.js"></script>
+  <script src="app/controller/browserplayer.js"></script>
+
+  <!-- templates -->
+  <script src="app/view/templates.js"></script>
+
+  <!-- models -->
+  <script src="app/models/music.js"></script>
+  <script src="app/models/files.js"></script>
+  <script src="app/models/system.js"></script>
+  <script src="app/models/playlists.js"></script>
+  <script src="app/models/favourites.js"></script>
+
+
+
+</head>
+<body class="xbmc-mini-player">
+
+<div id="mp-page-wrapper">
+  <div id="mp-page">
+
+    <div id="controls">
+
+      <h2 class="title" title="Mini Player"><i class="icon-headphones"></i> <strong>xbmc</strong>wui mini player</h2>
+
+      <div id="now-playing" data-albumid="">
+        <div id="playing-button" >
+          <img src="/theme/default.png" class="playing-thumb" />
+          <h4 class="playing-title"></h4>
+          <p class="playing-sub-title"></p>
+        </div>
+      </div>
+
+      <div id="mp-player">
+
+        <div class="player-right">
+          <div id="time">
+            <span class="time-current">0:00</span> / <span class="time-duration">0:00</span>
+          </div>
+          <ul id="player-actions">
+            <li class="action action-repeat noSelect"><i class="icon-repeat"></i></li>
+            <li class="action action-random noSelect"><i class="icon-random"></i></li>
+            <li class="action action-volume noSelect open">
+              <i class="icon-volume-down"></i>
+              <div id="volume-control">
+                <div id="volume-wrapper">
+                  <div id="volume"></div>
+                </div>
+                <i class="icon-volume-down"></i>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="player-left">
+          <ul id="player-controls">
+            <li class="action action-prev"><i class="icon-fast-backward"></i></li>
+            <li class="action action-play"><i class="icon-play icon-large"></i><i class="icon-pause icon-large"></i></li>
+            <li class="action action-next"><i class="icon-fast-forward"></i></li>
+          </ul>
+
+        </div>
+
+        <div class="player-mid">
+          <div id="progress-wrapper"><div id="progress"></div></div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <div id="mp-content">
+
+      <div id="content-target">
+
+      </div>
+
+    </div>
+
+
+    <div id="notify">
+      Loading App
+    </div>
+
+  </div>
+</div>
+
+
+<div id="offpage" style="display: none">
+  <div id="dialog"></div>
+</div>
+
+
+</body>
+</html>
